@@ -224,7 +224,7 @@
   (slime-setup))
 
 (when-feature *haskell*
-  (push-3rd-party-elisp-directory "haskell-mode-2.1")
+  (push-3rd-party-elisp-directory "haskell-mode-2.4")
   (load "haskell-site-file")
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
