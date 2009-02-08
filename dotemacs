@@ -133,6 +133,7 @@
 (global-set-key "\C-cl" 'eval-last-sexp)
 (global-set-key "\C-cp" 'eval-print-last-sexp)
 (global-set-key "\C-cd" 'run-lisp)
+(global-set-key "\C-cg" 'egg-status)
 
 ;; From emk-commands.el.
 (global-set-key "\C-cb" 'switch-to-build-shell)
