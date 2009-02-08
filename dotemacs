@@ -140,6 +140,7 @@
 (global-set-key "\C-cg" 'git-tools)
 (global-set-key "\C-cgs" 'egg-status)
 (global-set-key "\C-cgc" 'git-insert-credit)
+(global-set-key "\C-cgb" 'git-blame-mode)
 
 ;; From emk-commands.el.
 (global-set-key "\C-cb" 'switch-to-build-shell)
@@ -241,7 +242,8 @@
 
 (when-feature *egg*
   (push-3rd-party-elisp-directory "egg")
-  (require 'egg))
+  (require 'egg)
+  (autoload 'git-blame-mode "git-blame" "Git blame mode" t)) 
 
 (when-feature *dylan*
    (autoload 'dylan-mode
