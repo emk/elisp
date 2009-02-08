@@ -39,7 +39,7 @@
 (custom-set-faces
   ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
   ;; Your init file should contain only one such instance.
- '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 180 :width normal :family "adobe-courier"))))
+ '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :family "adobe-courier"))))
  '(font-lock-comment-face ((((class color)) (:foreground "Firebrick"))))
  '(font-lock-function-name-face ((((class color)) (:foreground "DarkGreen"))))
  '(font-lock-reference-face ((((class color)) (:foreground "CadetBlue"))))
