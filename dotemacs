@@ -69,6 +69,7 @@
 (load "emk-base")
 (load "emk-commands")
 (load "emk-os")
+(load "git-tools")
 
 ;;;
 ;;; Active Features
@@ -133,7 +134,12 @@
 (global-set-key "\C-cl" 'eval-last-sexp)
 (global-set-key "\C-cp" 'eval-print-last-sexp)
 (global-set-key "\C-cd" 'run-lisp)
-(global-set-key "\C-cg" 'egg-status)
+
+;; Git-specific bindings.
+(define-prefix-command 'git-tools)
+(global-set-key "\C-cg" 'git-tools)
+(global-set-key "\C-cgs" 'egg-status)
+(global-set-key "\C-cgc" 'git-insert-credit)
 
 ;; From emk-commands.el.
 (global-set-key "\C-cb" 'switch-to-build-shell)
