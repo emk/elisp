@@ -141,6 +141,7 @@
 (global-set-key "\C-cgs" 'egg-status)
 (global-set-key "\C-cgc" 'git-insert-credit)
 (global-set-key "\C-cgb" 'git-blame-mode)
+(global-set-key "\C-cgl" 'git-show-current-commit)
 
 ;; From emk-commands.el.
 (global-set-key "\C-cb" 'switch-to-build-shell)

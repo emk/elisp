@@ -45,3 +45,12 @@
   (let ((type (completing-read "Credit type: " git-credit-headers))
         (contributor (git-read-contributor "Contributor: ")))
     (insert-string (concat type ": " contributor))))
+
+;; Requires git/contrib/emacs/git-blame.el
+(defun git-show-current-commit ()
+  "Show the log message for the current commit"
+  (interactive)
+  (let ((text (shell-command-to-string
+               (concat "git log -1 --stat " (git-blame-current-commit)))))
+    (with-output-to-temp-buffer "*git blame*"
+      (princ text))))
