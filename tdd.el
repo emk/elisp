@@ -1,4 +1,5 @@
 ;;; tdd.el - Some tools to make the rhythm of test-driven design faster.
+;;; Copyright 2009 Eric Kidd
 ;;; Unreleased proof-of-Concept version, 01 Jun 2003.
 
 
