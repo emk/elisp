@@ -32,6 +32,7 @@
  '(c-basic-offset 4)
  '(current-language-environment "UTF-8")
  '(indent-tabs-mode nil)
+ '(inhibit-startup-screen t)
  '(whitespace-check-indent-whitespace nil)
  '(whitespace-global-mode nil nil (whitespace)))
 
