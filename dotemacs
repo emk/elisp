@@ -249,10 +249,10 @@
 
 (when-feature *dylan*
    (autoload 'dylan-mode
-     "/home/emk/src/gd/src/tools/elisp/dylan-mode"
+     "~/src/gd/src/tools/elisp/dylan-mode"
      "Mode for editing Dylan files" t)
    (autoload 'auto-display-method-params
-     "/home/emk/src/gd/src/tools/elisp/dylan-params"
+     "~/src/gd/src/tools/elisp/dylan-params"
      "Display Dylan method parameters" t)
 
    (safe-add-to-alist auto-mode-alist
