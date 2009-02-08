@@ -51,15 +51,15 @@
 ;;; Load Path Setup
 ;;;
 
-(defvar *emk-elisp-diretory* "~/w/elisp")
+(defvar *emk-elisp-directory* "~/w/elisp")
 (defvar *emk-3rd-party-elisp-directory*
-  (concat *emk-elisp-diretory* "/3rd-party"))
+  (concat *emk-elisp-directory* "/3rd-party"))
 (defun push-3rd-party-elisp-directory (name)
   "Add a subdirectory of our 3rd-party ELISP directory to the load path."
   (setq load-path (cons (concat *emk-3rd-party-elisp-directory* "/" name)
                         load-path)))
 (setq load-path
-      (cons *emk-elisp-diretory*
+      (cons *emk-elisp-directory*
             (cons *emk-3rd-party-elisp-directory* load-path)))
 
 ;;;
