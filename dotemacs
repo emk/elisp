@@ -12,9 +12,6 @@
 ;;;; And if you see some code which isn't properly credited, please let me
 ;;;; know, and I'll fix it.
 
-;; Make elisp work more like Common Lisp.
-(require 'cl)
-
 ;;;
 ;;; Notes
 ;;;
@@ -22,71 +19,11 @@
 ;;;
 
 ;;;
-;;; Basic Macros
-;;;
-
-(defmacro define-feature (feature flag)
-  "Define a feature to allow conditional compilation with when-feature."
-  (eval `(defvar ,feature ,flag))
-  nil)
-
-(defmacro when-feature (feature &rest body)
-  "Do BODY if FEATURE is true."
-  (if (eval feature) `(progn ,@body) nil))
-
-(defmacro safe-add-to-alist (alist &rest entries)
-  "Add items to an alist if they don't already have the proper values."
-  `(dolist (item ',entries)
-     (if (not (eq (cdr (assq (car item) ,alist))
-		  (cdr item)))
-	 (setq ,alist (cons item ,alist)))))
-
-(defmacro safe-add-items (list &rest items)
-  "Add items to the front of a list if they aren't already members."
-  `(dolist (item ',items)
-     (if (not (memq item ,list))
-	 (setq ,list (cons item ,list)))))
-
-(defmacro safe-add-hook (hook function args &rest body)
-  "Add a function to a hook only if it is not already present."
-  `(progn
-     (defun ,function ,args ,@body)
-     (add-hook ',hook ',function)))
-
-;;;
-;;; Elisp handling
-;;;
-
-(defmacro defindent (form value)
-  ;; See lisp-mode.el for more information about how this works.
-  `(put ',form 'lisp-indent-function ,value))
-
-(defindent when-feature 1)
-(defindent safe-add-to-alist 1)
-(defindent safe-add-items 1)
-(defindent safe-add-hook 3)
-(defindent define-mail-abbrevs 0)
-(defindent define-dylan-abbrevs 0)
-(defindent eval-after-load 1)
-(defindent letrec 1)
-
-;;;
-;;; Active Features
-;;;
-
-(define-feature *select* nil)
-(define-feature *javascript* t)
-(define-feature *planetary* t)
-(define-feature *ruby* t)
-(define-feature *slime* nil)
-(define-feature *haskell* t)
-(define-feature *predictive* t)
-(define-feature *egg* t)
-(define-feature *dylan* nil)
-
-;;;
 ;;; Automatically-Created Customizations
 ;;; Emacs sets these automatically for us. Use M-x customize
+;;;
+;;; These go at the top of the file so that we can override fonts in
+;;; emk-os.
 ;;;
 
 (custom-set-variables
@@ -111,10 +48,9 @@
  '(mmm-default-submode-face ((t (:background "ivory2")))))
 
 ;;;
-;;; Basic Global Customizations
+;;; Load Path Setup
 ;;;
 
-;; Standard ELISP locations.
 (defvar *emk-elisp-diretory* "~/w/elisp")
 (defvar *emk-3rd-party-elisp-directory*
   (concat *emk-elisp-diretory* "/3rd-party"))
@@ -126,11 +62,38 @@
       (cons *emk-elisp-diretory*
             (cons *emk-3rd-party-elisp-directory* load-path)))
 
+;;;
+;;; Load Modules
+;;;
+
+(load "emk-base")
+(load "emk-commands")
+(load "emk-os")
+
+;;;
+;;; Active Features
+;;;
+
+(define-feature *select* nil)
+(define-feature *javascript* t)
+(define-feature *planetary* t)
+(define-feature *ruby* t)
+(define-feature *slime* nil)
+(define-feature *haskell* t)
+(define-feature *predictive* t)
+(define-feature *egg* t)
+(define-feature *dylan* nil)
+
+;;;
+;;; Basic Global Customizations
+;;;
+
 ;; Modes and other customizations.
 (column-number-mode 1)                ; Show column numbers
 (show-paren-mode 1)                   ; Highlight matching parens.
 (put 'eval-expression 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 (safe-add-hook text-mode-hook activate-auto-fill-mode ()
   (auto-fill-mode 1)
   (flyspell-mode 1))
@@ -147,19 +110,13 @@
 ;;(autoload 'gamescript-mode "~/src/gamescript/gamescript.el"
 ;;  "Mode for editing GameScript source code" t)
 
-(defun switch-to-build-shell ()
-  (interactive)
-  (switch-to-buffer "*build*"))
-
 (safe-add-to-alist auto-mode-alist
-  ("\\.jl\\'" . lisp-mode)
-  ("\\.esidl\\'" . java-mode)
+  ("dotemacs\\'" . lisp-mode)
   ("\\.sgml\\'" . sgml-mode)
   ("\\.xml\\'" . xml-mode)
   ("\\.cs\\'" . java-mode) ; c-sharp
   ("\\.gs\\'" . gamescript-mode)
   )
-
 
 ;;;
 ;;; Custom Key Bindings
@@ -167,7 +124,6 @@
 
 (global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
 (global-set-key "\C-cz" 'shell)
-(global-set-key "\C-cb" 'switch-to-build-shell)
 (global-set-key "\C-cs" 'run-scheme)
 (global-set-key "\C-ce" 'eval-region)
 (global-set-key "\C-cm" 'man)
@@ -178,66 +134,9 @@
 (global-set-key "\C-cp" 'eval-print-last-sexp)
 (global-set-key "\C-cd" 'run-lisp)
 
-;;;
-;;; Operating-System-Specific Customizations
-;;;
-
-;; Customizations for Carbon Emacs on MacOS X.
-(when (eq system-type 'darwin)
-  ;; Taken from http://www.emacswiki.org/cgi-bin/wiki/MacOSTweaks .
-  (defun jfb-set-mac-font (name size)
-    (interactive
-     (list (completing-read "font-name: "
-                            (mapcar (lambda (p) (list (car p) (car p)))
-                                    (x-font-family-list)) nil t)
-           (read-number "size: " 12)))
-    (set-face-attribute 'default nil 
-                        :family name
-                        :slant  'normal
-                        :weight 'normal
-                        :width  'normal
-                        :height (* 10 size)))
-  
-  (tool-bar-mode 0) ;; The toolbar is useless.
-  (setq mac-allow-anti-aliasing t) ;; or nil
-  (jfb-set-mac-font "monaco" 13)
-  ;; Make the keyboard menu work.  I think this has been fixed upstream.
-  ;; http://groups.google.com/group/carbon-emacs/browse_thread/thread/b51921f9644b954c
-  (when (condition-case nil
-            (symbol-function mac-input-method-mode)
-          (error nil))
-    (mac-input-method-mode 1)))
-
-;; On Windows, always assume that we have Cygwin.
-;;
-;; This may have been adapted, in part, from some Emacs Cygwin
-;; documentation somewhere.
-(when (or (eq system-type 'windows-nt)
-          (eq system-type 'cygwin))
-  ;; I always install Cygwin in Unix mode.
-  (setq default-buffer-file-coding-system 'unix)
-
-  ;; This assumes that Cygwin is installed in C:\cygwin (the
-  ;; default) and that C:\cygwin\bin is not already in your
-  ;; Windows Path (it generally should not be).
-  (setq exec-path (cons "C:/cygwin/bin" exec-path))
-  (setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
-  
-  ;; NT-emacs assumes a Windows command shell, which you change
-  ;; here.
-  (setq process-coding-system-alist '(("bash" . undecided-unix)))
-  (setq shell-file-name "bash")
-  (setenv "SHELL" shell-file-name) 
-  (setq explicit-shell-file-name shell-file-name) 
-
-  ;; This removes unsightly ^M characters that would otherwise
-  ;; appear in the output of java applications.
-  (add-hook 'comint-output-filter-functions
-            'comint-strip-ctrl-m)
-
-  ;; Add support for Cygwin-style pathnames.
-  (require 'cygwin-mount)
-  (cygwin-mount-activate))
+;; From emk-commands.el.
+(global-set-key "\C-cb" 'switch-to-build-shell)
+(global-set-key "\C-cc" 'insert-block-comment)
 
 ;;;
 ;;; C Support
@@ -272,8 +171,6 @@
 (autoload 'python-mode "python-mode" "Mode for editing Python files" t)
 (safe-add-to-alist auto-mode-alist
   ("\\.py\\'" . python-mode))
-
-(put 'downcase-region 'disabled nil)
 
 (when-feature *javascript*
   (autoload 'javascript-mode "javascript" nil t)
@@ -368,52 +265,3 @@
 ;     ("dmet" "define method" nil 0)
 ;     ("udyl" "use dylan;" nil 0)
 ;     ("dcla" "define class" nil 0)))
-
-;;;
-;;; Block comments
-;;;
-
-(defun insert-block-comment ()
-  (interactive)
-  (insert-string (concat "/*=========================================="
-			 "===============================\n**  "))
-  (let ((title-point (point)))
-    (insert-string (concat "\n**=========================================="
-			   "===============================\n**  "))
-    (let ((description-point (point)))
-      (insert-string "\n*/")
-      (set-mark description-point)
-      (goto-char title-point))))
-
-(global-set-key "\C-cc" 'insert-block-comment)
-
-;;;
-;;; Unwrapping lines (adapted from longlines.el by Kai Grossjohann and Alex
-;;; Schroeder)
-;;; 
-
-(defun unwrap-region (start end &optional buffer)
-  "Unwrap long lines in the region from START to END.
-The region is assumed to contain short lines and soft and hard newlines.
-Soft newlines and any following whitespace on the next line will be
-replaced with exactly one space.
-
-The optional argument BUFFER will be ignored.  It is assumed to exist
-when the function is called via `format-alist'."
-  (interactive "r")
-  (save-excursion
-    (goto-char start)
-    (while (re-search-forward "\n[ \t]*" end t)
-      (unless (get-text-property (match-beginning 0) 'hard)
-        (replace-match " ")))
-    (max end (point))))
- 
-(defun unwrap-paragraph ()
-  "Unwrap all lines in the current paragraph."
-  (interactive)
-  (save-excursion
-    (mark-paragraph)
-    ;; I shouldn't really use MARK and POP-MARK in an editing command, but
-    ;; that's the only way to get the output of MARK-PARAGRAPH.  Oh, well.
-    (unwrap-region (+ (point) 1) (- (mark) 1))
-    (pop-mark)))
