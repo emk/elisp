@@ -1,3 +1,21 @@
 This is my personal Emacs configuration, dating back to the fall of 1997.
-It's probably not very useful to anyone but me, though there are some
-useful snippets in here.
+It's probably not very interesting to anyone but me, though there are some
+potentially useful snippets in here.
+
+To download this repository:
+
+  mkdir w && cd w
+  git clone git://github.com/emk/elisp.git
+  cd elisp
+  git submodule update --init
+  cd ../..
+
+To install it on a Unix-like system:
+
+  ln -s w/elisp/dotemacs .emacs
+
+To install it on a Windows system:
+
+  cp -i w/elisp/loader.el .emacs
+
+See the file 'dotemacs' for copyright and credit information.
