@@ -1,13 +1,19 @@
 ;;;; .emacs for Eric Kidd
-;;;; Last modified 24 Sep 97
+;;;;
+;;;; This file dates back to the fall of 1997, when I first started using
+;;;; Emacs in earnest.  There's a lot of old cruft in here, and most of it
+;;;; is probably of no interest to anyone but me.
+;;;;
+;;;; A note about credit: At the time of writing, this file is 11.5 years
+;;;; old.  During that time, I've attempted to keep records of where the
+;;;; code snippets in this file originated, but I've undoutably overlooked
+;;;; several smaller snippets.  So please don't assume that anything in
+;;;; this file is necessarily mine, at least not without asking me first.
+;;;; And if you see some code which isn't properly credited, please let me
+;;;; know, and I'll fix it.
 
+;; Make elisp work more like Common Lisp.
 (require 'cl)
-
-;;;
-;;; Emacs Major Version
-;;;
-
-;(defvar emacs-major-version 19)
 
 ;;;
 ;;; Notes
@@ -18,14 +24,6 @@
 ;;;
 ;;; Basic Macros
 ;;;
-
-(defmacro version-ecase (&rest clauses)
-  "Perform one of several actions, depending on the version of Emacs."
-  (let ((clause (or (assq emacs-major-version clauses)
-		    (assq 'otherwise clauses))))
-    (if clause
-	`(progn ,@(cdr clause))
-      (error "No appropriate version for version-ecase"))))
 
 (defmacro define-feature (feature flag)
   "Define a feature to allow conditional compilation with when-feature."
@@ -56,33 +54,32 @@
      (add-hook ',hook ',function)))
 
 ;;;
+;;; Elisp handling
+;;;
+
+(defmacro defindent (form value)
+  ;; See lisp-mode.el for more information about how this works.
+  `(put ',form 'lisp-indent-function ,value))
+
+(defindent when-feature 1)
+(defindent safe-add-to-alist 1)
+(defindent safe-add-items 1)
+(defindent safe-add-hook 3)
+(defindent define-mail-abbrevs 0)
+(defindent define-dylan-abbrevs 0)
+(defindent eval-after-load 1)
+(defindent letrec 1)
+
+;;;
 ;;; Active Features
 ;;;
 
-(define-feature *xml* nil)
 (define-feature *dylan* nil)
-(define-feature *mutt* nil)
-(define-feature *mail* nil)
-(define-feature *turbo-completion* t)
-(define-feature *old-font-lock* nil)
-(define-feature *new-font-lock* nil)
-(define-feature *newer-font-lock* t)
-(define-feature *daily-changelog* t)
-(define-feature *php-magic-editing* nil)
-(define-feature *mmm-mode-editing* nil)
-(define-feature *dxlit-editing* nil)
-(define-feature *utf8* nil)
-(define-feature *ocaml* nil)
 (define-feature *select* nil)
-(define-feature *emacs21* t)
-(define-feature *carbon-emacs-22* t)
-(define-feature *cygwin* nil)
-(define-feature *zope-ftp-windows* nil)
 (define-feature *javascript* t)
 (define-feature *planetary* t)
 (define-feature *ruby* t)
-(define-feature *slime* t)
-(define-feature *mozart* nil)
+(define-feature *slime* nil)
 (define-feature *haskell* t)
 (define-feature *predictive* t)
 (define-feature *egg* t)
@@ -100,6 +97,7 @@
  '(indent-tabs-mode nil)
  '(whitespace-check-indent-whitespace nil)
  '(whitespace-global-mode nil nil (whitespace)))
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
   ;; Your init file should contain only one such instance.
@@ -128,20 +126,11 @@
       (cons *emk-elisp-diretory*
             (cons *emk-3rd-party-elisp-directory* load-path)))
 
-;;(setq printer-name "USB002")
-;;(setq lpr-command "")
-;;(define-key menu-bar-print-menu [print-region]
-;;  '("Print Region" . lpr-region))
-;;(define-key menu-bar-print-menu [print-buffer]
-;;  '("Print Buffer" . lpr-buffer))
-;;(setq lpr-command "notepad")
-;;(setq lpr-headers-switches '("/p"))    ; \ mis-use these
-;;(setq lpr-switches nil)                ; / two variables
-;;(setq printer-name nil)
-
+;; Modes and other customizations.
 (column-number-mode 1)                ; Show column numbers
 (show-paren-mode 1)                   ; Highlight matching parens.
 (put 'eval-expression 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 (safe-add-hook text-mode-hook activate-auto-fill-mode ()
   (auto-fill-mode 1)
   (flyspell-mode 1))
@@ -153,15 +142,9 @@
 (setq next-line-add-newlines nil)     ; Don't insert newline at end of buffer!
 (safe-add-items completion-ignored-extensions
   ".obj" ".d" ".fasl" ".pfsl" ".jlc" ".hi")
+(setq show-trailing-whitespace t)
 
-(when-feature *xml*
-  (load "rng-auto")
-  ;;(load "psgml-init" "SGML Editing Mode" t)
-  ;;(autoload 'xml-mode "psgml" "XML Editing Mode" t)
-  ;;(autoload 'sgml-mode "psgml" "SGML Editing Mode" t)
-  )
-
-;;(autoload 'gamescript-mode "/home/emk/src/gamescript/gamescript.el"
+;;(autoload 'gamescript-mode "~/src/gamescript/gamescript.el"
 ;;  "Mode for editing GameScript source code" t)
 
 (defun switch-to-build-shell ()
@@ -177,12 +160,31 @@
   ("\\.gs\\'" . gamescript-mode)
   )
 
-(when-feature *emacs21*
-  (setq show-trailing-whitespace t)
-  )
 
-(when-feature *carbon-emacs-22*
-  ;; http://www.emacswiki.org/cgi-bin/wiki/MacOSTweaks
+;;;
+;;; Custom Key Bindings
+;;;
+
+(global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
+(global-set-key "\C-cz" 'shell)
+(global-set-key "\C-cb" 'switch-to-build-shell)
+(global-set-key "\C-cs" 'run-scheme)
+(global-set-key "\C-ce" 'eval-region)
+(global-set-key "\C-cm" 'man)
+(global-set-key "\C-cw" 'ispell-word)
+(global-set-key "\C-cr" 'rename-buffer)
+(global-set-key "\C-ci" 'send-invisible)
+(global-set-key "\C-cl" 'eval-last-sexp)
+(global-set-key "\C-cp" 'eval-print-last-sexp)
+(global-set-key "\C-cd" 'run-lisp)
+
+;;;
+;;; Operating-System-Specific Customizations
+;;;
+
+;; Customizations for Carbon Emacs on MacOS X.
+(when (eq system-type 'darwin)
+  ;; Taken from http://www.emacswiki.org/cgi-bin/wiki/MacOSTweaks .
   (defun jfb-set-mac-font (name size)
     (interactive
      (list (completing-read "font-name: "
@@ -206,73 +208,42 @@
           (error nil))
     (mac-input-method-mode 1)))
 
-;;;
-;;; Custom Key Bindings
-;;;
+;; On Windows, always assume that we have Cygwin.
+;;
+;; This may have been adapted, in part, from some Emacs Cygwin
+;; documentation somewhere.
+(when (or (eq system-type 'windows-nt)
+          (eq system-type 'cygwin))
+  ;; I always install Cygwin in Unix mode.
+  (setq default-buffer-file-coding-system 'unix)
 
-(global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
-(global-set-key "\C-cz" 'shell)
-(global-set-key "\C-cb" 'switch-to-build-shell)
-(global-set-key "\C-cs" 'run-scheme)
-(global-set-key "\C-ce" 'eval-region)
-(global-set-key "\C-cm" 'man)
-(global-set-key "\C-cw" 'ispell-word)
-(global-set-key "\C-cr" 'rename-buffer)
-(global-set-key "\C-ci" 'send-invisible)
-(global-set-key "\C-cl" 'eval-last-sexp)
-(global-set-key "\C-cp" 'eval-print-last-sexp)
-(global-set-key "\C-cc" 'insert-block-comment)
-(global-set-key "\C-cd" 'run-lisp)
+  ;; This assumes that Cygwin is installed in C:\cygwin (the
+  ;; default) and that C:\cygwin\bin is not already in your
+  ;; Windows Path (it generally should not be).
+  (setq exec-path (cons "C:/cygwin/bin" exec-path))
+  (setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
+  
+  ;; NT-emacs assumes a Windows command shell, which you change
+  ;; here.
+  (setq process-coding-system-alist '(("bash" . undecided-unix)))
+  (setq shell-file-name "bash")
+  (setenv "SHELL" shell-file-name) 
+  (setq explicit-shell-file-name shell-file-name) 
 
-;;;
-;;; Turbo-charged Completion
-;;;
+  ;; This removes unsightly ^M characters that would otherwise
+  ;; appear in the output of java applications.
+  (add-hook 'comint-output-filter-functions
+            'comint-strip-ctrl-m)
 
-(when-feature *turbo-completion*
-  (load "complete"))
-
-;;;
-;;; Elisp handling
-;;;
-
-(defmacro defindent (form value)
-  ;; See lisp-mode.el for more information about how this works.
-  (version-ecase
-    (18 `(put ',form 'lisp-indent-hook ,value))
-    (19 `(put ',form 'lisp-indent-function ,value))
-    (20 `(put ',form 'lisp-indent-function ,value))
-    (21 `(put ',form 'lisp-indent-function ,value))
-    (22 `(put ',form 'lisp-indent-function ,value))
-    (23 `(put ',form 'lisp-indent-function ,value))))
-
-(defindent when-feature 1)
-(defindent safe-add-to-alist 1)
-(defindent safe-add-items 1)
-(defindent safe-add-hook 3)
-(defindent version-ecase 0)
-(defindent define-mail-abbrevs 0)
-(defindent define-dylan-abbrevs 0)
-(defindent eval-after-load 1)
-(defindent letrec 1)
-
-; For glade-window.jl
-(defindent handler 2)
-(defindent function 2)
-
-;;;
-;;; Inferior LISP Mode
-;;;
-
-(setq inferior-lisp-program "clisp -I -q")
-
+  ;; Add support for Cygwin-style pathnames.
+  (require 'cygwin-mount)
+  (cygwin-mount-activate))
 
 ;;;
 ;;; C Support
 ;;;
 
 (safe-add-hook c-mode-common-hook c-mode-common-customizations ()
-;  (version-ecase
-;    (19
   (setq c-basic-offset 4)
   (setq c-recognize-knr-p nil)
   (safe-add-to-alist c-offsets-alist
@@ -281,12 +252,6 @@
     (label . -)
     (arglist-intro . +)
     (arglist-cont . 0)))
-;    (20 (setq c-tab-always-indent t)
-;	(setq c-indent-level 4)
-;	(setq c-continued-statement-offset 4)
-;	(setq c-continued-brace-offset -4)
-;))
-;)
 
 ;;;
 ;;; Dylan Mode & Related Features
@@ -323,108 +288,6 @@
 ;     ("dcla" "define class" nil 0)))
 
 ;;;
-;;; Mutt Editing Support
-;;;
-
-(when-feature *mutt*
-  (autoload 'mutt-mode "/home/emk/old-src/mutt/mutt"
-    "Mode for composing e-mail messages with mutt" t)
-  (safe-add-to-alist auto-mode-alist
-    ("/tmp/mutt-" . mutt-mode)))
-
-;;;
-;;; Newer Font-Lock-Mode Preferences (Emacs 20)
-;;;
-
-(when-feature *newer-font-lock*
-  (eval-after-load "font-lock"
-    (custom-set-faces
-     '(font-lock-comment-face
-       ((((class color))
-	 (:foreground "Firebrick"))))
-     '(font-lock-string-face
-       ((((class color))
-	 (:foreground "DarkGrey"))))
-     '(font-lock-function-name-face
-       ((((class color))
-	 (:foreground "DarkGreen"))))
-     '(font-lock-variable-name-face
-       ((((class color))
-	 (:foreground "DarkGreen"))))
-     '(font-lock-type-face
-       ((((class color))
-	 (:foreground "DarkOliveGreen"))))
-     '(font-lock-reference-face
-       ((((class color))
-	 (:foreground "CadetBlue"))))
-     ))
-  (global-font-lock-mode t))
-
-;;;
-;;; New Font-Lock-Mode Preferences (19)
-;;;
-
-(when-feature *new-font-lock*
-  (eval-after-load "font-lock"
-    '(progn
-       (setq font-lock-face-attributes
-	     '((font-lock-comment-face "Firebrick")
-	       (font-lock-string-face "DarkGrey")
-	       (font-lock-keyword-face "Blue")
-	       (font-lock-function-name-face "DarkGreen")
-	       (font-lock-variable-name-face "DarkGreen")
-	       (font-lock-type-face "DarkOliveGreen")
-	       (font-lock-reference-face "CadetBlue")))
-       (font-lock-make-faces t))))
-
-;;;
-;;; Old Font-Lock Hack (19 something?)
-;;;
-;;; Bash display faces so early versions of font-lock look like the
-;;; CodeWarrior IDE. This is a rather gross thing to do.
-;;;
-
-(when-feature *old-font-lock*
-  (eval-after-load "font-lock"
-    '((font-lock-make-faces t)
-
-      ;; Make keywords blue
-      (make-face-unbold 'bold)
-      (set-face-foreground 'bold "blue")
-      
-      ;;Make defining instances green
-      (make-face-unbold 'bold-italic)
-      (make-face-unitalic 'bold-italic)
-      (set-face-foreground 'bold-italic "darkgreen")
-      
-      ;; Make comments red
-      (make-face-unitalic 'italic)
-      (set-face-foreground 'italic "red")
-      
-      ;; Make strings gray
-      (set-face-underline-p 'underline nil)
-      (set-face-foreground 'underline "darkgrey"))))
-
-(put 'narrow-to-region 'disabled nil)
-
-;;;
-;;; Daily Changelog
-;;;
-
-(defvar *daily-changelog-file* "/home/emk/work/progress")
-
-(defun add-daily-note ()
-  (interactive)
-  (find-file *daily-changelog-file*)
-  (add-change-log-entry nil *daily-changelog-file*))
-
-(push (cons (concatenate 'string "\\'" *daily-changelog-file* "\\'")
-	    'change-log-mode)
-      auto-mode-alist)
-
-(global-set-key "\C-cp" 'add-daily-note)
-
-;;;
 ;;; Block comments
 ;;;
 
@@ -440,193 +303,17 @@
       (set-mark description-point)
       (goto-char title-point))))
 
-;;;
-;;; Unicode Text Entry
-;;;
-
-;;(require 'rfc1345)
-
-;;;
-;;; SQL Mode
-;;;
-
-;(setq load-path (cons "/home/emk/src/sql-mode/" load-path))
-;(require 'sql-mode)
-;(sql-initialize)
-
-;;;
-;;; Evil hack
-;;;
-
-;;(define-derived-mode spawn-emacs-mode fundamental-mode
-;;  "Major mode for forking off new Emacsen. This is a hack."
-;;  (message "Opening new frame")
-;;  (make-frame-on-display (buffer-string))
-;;  (kill-buffer))
-;;
-;;(safe-add-to-alist auto-mode-alist
-;;  ("spawn" . spawn-emacs-mode))
-
-;;;
-;;; Save and restore Emacs state across sessions.
-;;;
-
-;(desktop-load-default)
-;(desktop-read)
-
-
-;;;
-;;; PHP Magic Editing
-;;;
-;;; Set up some *really* slick support for editing PHP files using
-;;; two-mode-mode, html-mode and php-mode. This setup is amazingly nice
-;;; for all my PHP-hacking needs.
-;;;
-;;; I mark *.htm and files as PHP files because of a specific client project.
-;;; I mark *.view files as PHP files because I use a JSP-style MVC separation.
-;;;
-
-(when-feature *php-magic-editing*
-
-  ;; Pre-configure two-mode-mode before we load it.
-  (defvar two-mode-lmatch "<?")
-  (defvar two-mode-rmatch "?>")
-  (defvar default-mode (list 'html-mode "HTML"))
-  (defvar second-mode (list 'php-mode "PHP"))
-
-  ;; Make some stuff auto-loadable.
-  (autoload 'php-mode "php-mode" "PHP editing mode" t)
-  (autoload 'two-mode-mode "two-mode-mode" "Two-mode editing support" t)
-
-  ;; Mark our PHP extensions as HTML files.
-  (safe-add-to-alist auto-mode-alist
-    ("\\.php\\'" . html-mode)
-    ("\\.inc\\'" . html-mode)
-    ("\\.htm\\'" . html-mode))
-
-  ;; Turn on two-mode-mode. This is technically a minor mode, so it probably
-  ;; shouldn't go in this alist. This *must* come after the declaration above
-  ;; if we want it to work.
-  ;; Type C-h v auto-mode-alist for information on what the 't' means.
-  (safe-add-to-alist auto-mode-alist
-    ("\\.php\\'" two-mode-mode t)
-    ("\\.inc\\'" two-mode-mode t)
-    ("\\.htm\\'" two-mode-mode t)))
-
-
-;;;
-;;; Multiple-Major-Mode Mode
-;;;
-;;; Set up mmm-mode (which is a more general form of two-mode-mode) and
-;;; configure a few classes.
-;;;
-
-(when-feature *mmm-mode-editing*
-
-  (require 'mmm-auto)
-  (setq mmm-global-mode 'maybe)
-
-  ;;; A custom literate C format by Peter Housel.
-  (when-feature *dxlit-editing*
-    (mmm-add-classes
-     '((literate-c
-	:submode c-mode
-	:front "<sf\\( [^>]*\\)?>\\([ \t]*\n\\)?"
-	:back "\\(^[ \t]*\\)?</sf>")))
-    (safe-add-to-alist auto-mode-alist
-      ("\\.dxl\\'" . xml-mode))
-    (mmm-add-mode-ext-class 'xml-mode "\\.dxl\\'" 'literate-c))
-
-  ;;; PHP editing.
-  (mmm-add-classes
-   '((embedded-php
-      :submode php-mode
-      :front "<\\?\\(php\\)?\\s-*"
-      :back "\\s-*\\?>"
-      :include-front t
-      :include-back t)))
-  ;; Interactive Media Lab PHP files.
-  (mmm-add-mode-ext-class 'html-mode
-			  "work/intranet/.*\\.html\\'"
-			  'embedded-php))
-
-
-;;;
-;;; Form letters, standard footers, etc.
-;;;
-
-(defun append-xmlrpc-c-footer ()
-  "Append a footer to messages about XML-RPC."
-  (interactive)
-  (save-excursion
-    (goto-char (point-max))
-    (insert-string "\nCheers,\nEric\n\n--")
-    (insert-string "
-XML-RPC HOWTO:          http://www.linuxdoc.org/HOWTO/XML-RPC-HOWTO/index.html
-XML-RPC for C and C++:  http://xmlrpc-c.sourceforge.net/
-xmlrpc-c-devel list:    http://xmlrpc-c.sourceforge.net/lists.php
-XML-RPC consulting:     http://www.sourcebuilders.com/xml-rpc.html\n"
-		   )))
-
-(global-set-key "\C-cf" 'append-xmlrpc-c-footer)
-
-
-;;;
-;;; UTF-8 support
-;;;
-
-;; Modified from oc-unicode documentation.
-(defun load-utf8 ()
-  "Load and activate UTF-8 support."
-  (interactive)
-  (require 'oc-unicode)
-  (set-terminal-coding-system 'utf-8)
-  (when (eq window-system 'x)
-    (set-frame-font
-     (oc-create-fontset
-      "-misc-fixed-medium-r-normal--18-*-*-*-*-*-fontset-standard"
-      "-misc-fixed-medium-r-normal-ja-18-*-iso10646-*"))
-    (oc-create-fontset
-     "-misc-fixed-medium-r-normal--13-*-*-*-*-*-fontset-standard"
-     "-misc-fixed-medium-r-normal-ja-13-*-iso10646-*")))
-
-; GPL'd function - Stolen from Emacs 20.5 MULE
-(defun utf-8-argument ()
-  "Execute an I/O command using UTF-8."
-  (interactive)
-  (let* ((coding-system 'utf-8)
-	 (keyseq (read-key-sequence
-		  (format "Command to execute with %s:" coding-system)))
-	 (cmd (key-binding keyseq)))
-    (let ((coding-system-for-read coding-system)
-	  (coding-system-for-write coding-system))
-      (message "")
-      (call-interactively cmd))))
-
-(global-set-key "\C-cu" 'utf-8-argument)
-
-;;;
-;;; OCaml Support
-;;;
-
-(when-feature *ocaml*
-  (safe-add-to-alist auto-mode-alist
-    ("\\.ml[iyl]?$" .  caml-mode))
-
-  (autoload 'caml-mode "ocaml" (interactive)
-    "Major mode for editing Caml code." t)
-  (autoload 'camldebug "camldebug" (interactive) "Debug caml mode"))
-
-;;;
-;;; Experimental Select Mode
-;;;
-
-(when-feature *select*
-  (load "select"))
+(global-set-key "\C-cc" 'insert-block-comment)
 
 ;;;
 ;;; Other modes.
 ;;;
+
+;; My favorite Emacs completion mode.
+(load "complete")
+
+(when-feature *select*
+  (load "select"))
 
 (autoload 'halyard-mode "~/src/iml/halyard/tools/halyard.el"
   "Mode for editing Halyard source code" t)
@@ -639,47 +326,6 @@ XML-RPC consulting:     http://www.sourcebuilders.com/xml-rpc.html\n"
   ("\\.py\\'" . python-mode))
 
 (put 'downcase-region 'disabled nil)
-
-;;;
-;;; Cygwin Support
-;;;
-
-;; This may have been adapted, in part, from some Emacs Cygwin
-;; documentation somewhere.
-(when-feature *cygwin*
-  ;; This assumes that Cygwin is installed in C:\cygwin (the
-  ;; default) and that C:\cygwin\bin is not already in your
-  ;; Windows Path (it generally should not be).
-  (setq exec-path (cons "C:/cygwin/bin" exec-path))
-  (setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
-  
-  ;; NT-emacs assumes a Windows command shell, which you change
-  ;; here.
-  (setq process-coding-system-alist '(("bash" . undecided-unix)))
-  (setq shell-file-name "bash")
-  (setenv "SHELL" shell-file-name) 
-  (setq explicit-shell-file-name shell-file-name) 
-
-  ;; This removes unsightly ^M characters that would otherwise
-  ;; appear in the output of java applications.
-  (add-hook 'comint-output-filter-functions
-            'comint-strip-ctrl-m)
-
-  ;; Add support for Cygwin-style pathnames.
-  (require 'cygwin-mount)
-  (cygwin-mount-activate))
-
-(when-feature *zope-ftp-windows*
-  (setq ange-ftp-ftp-program-name "/cygwin/bin/ftp.exe")
-  (setq ange-ftp-try-passive-mode t)
-  (setq ange-ftp-ftp-program-args '("-i" "-n" "-g" "-v" "--prompt" ""))
-
-  (safe-add-to-alist auto-mode-alist
-    ("\\.dtml\\'" . html-mode)
-    ("\\_html\\'" . xml-mode)
-    ("\\.pt\\'" . xml-mode)
-    ("\\.xml\\'" . xml-mode)
-    ))
 
 (when-feature *javascript*
   (autoload 'javascript-mode "javascript" nil t)
@@ -718,7 +364,7 @@ XML-RPC consulting:     http://www.sourcebuilders.com/xml-rpc.html\n"
       :front "<%"
       :back "%>")))
 
-  (mmm-add-mode-ext-class nil "\\.rhtml\\'" 'embedded-ruby)
+  (mmm-add-mode-ext-class nil "\\.html\\.erb\\'" 'embedded-ruby)
   
   )
 
@@ -730,10 +376,6 @@ XML-RPC consulting:     http://www.sourcebuilders.com/xml-rpc.html\n"
   (push-3rd-party-elisp-directory "slime")
   (require 'slime)
   (slime-setup))
-
-(when-feature *mozart*
-  (add-to-list 'load-path "/usr/local/oz/share/elisp")
-  (require 'oz))
 
 (when-feature *haskell*
   (push-3rd-party-elisp-directory "haskell-mode-2.1")
