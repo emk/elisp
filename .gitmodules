@@ -1,0 +1,3 @@
+[submodule "3rd-party/egg"]
+	path = 3rd-party/egg
+	url = git://github.com/bogolisk/egg.git
