@@ -74,7 +74,6 @@
 ;;; Active Features
 ;;;
 
-(define-feature *dylan* nil)
 (define-feature *select* nil)
 (define-feature *javascript* t)
 (define-feature *planetary* t)
@@ -83,6 +82,7 @@
 (define-feature *haskell* t)
 (define-feature *predictive* t)
 (define-feature *egg* t)
+(define-feature *dylan* nil)
 
 ;;;
 ;;; Automatically-Created Customizations
@@ -254,59 +254,7 @@
     (arglist-cont . 0)))
 
 ;;;
-;;; Dylan Mode & Related Features
-;;;
-
-(when-feature *dylan*
-   (autoload 'dylan-mode
-     "/home/emk/src/gd/src/tools/elisp/dylan-mode"
-     "Mode for editing Dylan files" t)
-   (autoload 'auto-display-method-params
-     "/home/emk/src/gd/src/tools/elisp/dylan-params"
-     "Display Dylan method parameters" t)
-
-   (safe-add-to-alist auto-mode-alist
-      ("\\.dylan\\'" . dylan-mode)
-      ("\\.intr\\'" . dylan-mode))
-   (safe-add-hook dylan-mode-hook dylan-mode-customizations ()
-     (font-lock-mode t)
-     (local-set-key "(" 'auto-display-method-params))
-
-   ;; Abbreviations for easy typing
-   (defmacro define-dylan-abbrevs (&rest abbrevs)
-     `(progn ,@(mapcar (lambda (x)
-                         `(define-abbrev 'dylan-mode-abbrev-table ,x))
-                       abbrevs))))
-;   (define-dylan-abbrevs
-;     ("dlib" "define library" nil 0)
-;     ("dmod" "define module" nil 0)
-;     ("dvar" "define variable" nil 0)
-;     ("dcon" "define constant" nil 0)
-;     ("dgen" "define generic" nil 0)
-;     ("dmet" "define method" nil 0)
-;     ("udyl" "use dylan;" nil 0)
-;     ("dcla" "define class" nil 0)))
-
-;;;
-;;; Block comments
-;;;
-
-(defun insert-block-comment ()
-  (interactive)
-  (insert-string (concat "/*=========================================="
-			 "===============================\n**  "))
-  (let ((title-point (point)))
-    (insert-string (concat "\n**=========================================="
-			   "===============================\n**  "))
-    (let ((description-point (point)))
-      (insert-string "\n*/")
-      (set-mark description-point)
-      (goto-char title-point))))
-
-(global-set-key "\C-cc" 'insert-block-comment)
-
-;;;
-;;; Other modes.
+;;; Mode configuration.
 ;;;
 
 ;; My favorite Emacs completion mode.
@@ -390,6 +338,54 @@
 (when-feature *egg*
   (push-3rd-party-elisp-directory "egg")
   (require 'egg))
+
+(when-feature *dylan*
+   (autoload 'dylan-mode
+     "/home/emk/src/gd/src/tools/elisp/dylan-mode"
+     "Mode for editing Dylan files" t)
+   (autoload 'auto-display-method-params
+     "/home/emk/src/gd/src/tools/elisp/dylan-params"
+     "Display Dylan method parameters" t)
+
+   (safe-add-to-alist auto-mode-alist
+      ("\\.dylan\\'" . dylan-mode)
+      ("\\.intr\\'" . dylan-mode))
+   (safe-add-hook dylan-mode-hook dylan-mode-customizations ()
+     (font-lock-mode t)
+     (local-set-key "(" 'auto-display-method-params))
+
+   ;; Abbreviations for easy typing
+   (defmacro define-dylan-abbrevs (&rest abbrevs)
+     `(progn ,@(mapcar (lambda (x)
+                         `(define-abbrev 'dylan-mode-abbrev-table ,x))
+                       abbrevs))))
+;   (define-dylan-abbrevs
+;     ("dlib" "define library" nil 0)
+;     ("dmod" "define module" nil 0)
+;     ("dvar" "define variable" nil 0)
+;     ("dcon" "define constant" nil 0)
+;     ("dgen" "define generic" nil 0)
+;     ("dmet" "define method" nil 0)
+;     ("udyl" "use dylan;" nil 0)
+;     ("dcla" "define class" nil 0)))
+
+;;;
+;;; Block comments
+;;;
+
+(defun insert-block-comment ()
+  (interactive)
+  (insert-string (concat "/*=========================================="
+			 "===============================\n**  "))
+  (let ((title-point (point)))
+    (insert-string (concat "\n**=========================================="
+			   "===============================\n**  "))
+    (let ((description-point (point)))
+      (insert-string "\n*/")
+      (set-mark description-point)
+      (goto-char title-point))))
+
+(global-set-key "\C-cc" 'insert-block-comment)
 
 ;;;
 ;;; Unwrapping lines (adapted from longlines.el by Kai Grossjohann and Alex
