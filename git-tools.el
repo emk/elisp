@@ -29,7 +29,7 @@
   "Return the list of git contributors for the current repository"
   (let ((contributors-string
          (shell-command-to-string
-          "git log --pretty=format:'%an <%ae>%n%cn <%ce>' | sort -u")))
+          "git log -300 --pretty=format:'%an <%ae>%n%cn <%ce>' | sort -u")))
     (split-string contributors-string "[\n\r]+" t)))
 
 (defun git-read-contributor (prompt)
