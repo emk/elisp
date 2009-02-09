@@ -83,7 +83,7 @@
 (define-feature *slime* nil)
 (define-feature *haskell* t)
 (define-feature *predictive* t)
-(define-feature *egg* t)
+(define-feature *git* t)
 (define-feature *dylan* nil)
 
 ;;;
@@ -139,7 +139,7 @@
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
 (global-set-key "\C-cg" 'git-tools)
-(global-set-key "\C-cgs" 'egg-status)
+(global-set-key "\C-cgs" 'magit-status)
 (global-set-key "\C-cgc" 'git-insert-credit)
 (global-set-key "\C-cgb" 'git-blame-mode)
 (global-set-key "\C-cgl" 'git-show-current-commit)
@@ -242,9 +242,9 @@
   (push-3rd-party-elisp-directory "predictive")
   (autoload 'predictive-mode "predictive" "Predictive Input Mode" t))
 
-(when-feature *egg*
-  (push-3rd-party-elisp-directory "egg")
-  (require 'egg)
+(when-feature *git*
+  (push-3rd-party-elisp-directory "magit")
+  (require 'magit)
   (autoload 'git-blame-mode "git-blame" "Git blame mode" t)) 
 
 (when-feature *dylan*

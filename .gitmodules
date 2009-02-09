@@ -1,3 +1,3 @@
-[submodule "3rd-party/egg"]
-	path = 3rd-party/egg
-	url = git://github.com/bogolisk/egg.git
+[submodule "3rd-party/magit"]
+	path = 3rd-party/magit
+	url = git://gitorious.org/magit/mainline.git
