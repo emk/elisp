@@ -37,6 +37,18 @@
 ;;   (global-set-key "\C-cgc" 'git-insert-credit)
 ;;   (global-set-key "\C-cgb" 'git-blame-mode)
 ;;   (global-set-key "\C-cgl" 'git-show-current-commit)
+;;
+;; Useful commands include:
+;;
+;;   git-insert-credit:
+;;     This will insert 'Reviewed-by', 'Cc', and other git credit lines,
+;;     with support for completing both the credit type and the contributor
+;;     name.  The latter supports completion of names that appear in the
+;;     last several hundred commits.
+;;
+;;   git-show-current-commit:
+;;     This can be used with git-blame.el to display the commit message for
+;;     the current line.
 
 (defun git-contributors ()
   "Return the list of git contributors for the current repository"
