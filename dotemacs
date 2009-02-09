@@ -172,7 +172,10 @@
 (when-feature *select*
   (load "select"))
 
-(autoload 'halyard-mode "~/src/iml/halyard/tools/halyard.el"
+(autoload 'halyard-mode
+  (if (file-exists-p "~/src/halyard/tools/halyard.el")
+      "~/src/halyard/tools/halyard.el"
+    "~/src/iml/halyard/tools/halyard.el")
   "Mode for editing Halyard source code" t)
 
 (safe-add-to-alist auto-mode-alist
