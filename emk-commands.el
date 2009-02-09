@@ -16,6 +16,11 @@
       (set-mark description-point)
       (goto-char title-point))))
 
+(defun find-dotemacs ()
+  "Open and edit the .emacs configuration file"
+  (interactive)
+  (find-file "~/w/elisp/dotemacs"))
+
 ;;;
 ;;; Unwrapping lines (adapted from longlines.el by Kai Grossjohann and Alex
 ;;; Schroeder)

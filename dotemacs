@@ -131,6 +131,7 @@
 (global-set-key "\C-cw" 'ispell-word)
 (global-set-key "\C-cr" 'rename-buffer)
 (global-set-key "\C-ci" 'send-invisible)
+(global-set-key "\C-cd" 'find-dotemacs)
 
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
