@@ -109,8 +109,10 @@
   ".obj" ".d" ".fasl" ".pfsl" ".jlc" ".hi")
 (setq show-trailing-whitespace t)
 
-;;(autoload 'gamescript-mode "~/src/gamescript/gamescript.el"
-;;  "Mode for editing GameScript source code" t)
+;; Disable font-lock-mode on the terminal, because the colors are never
+;; right.
+(unless window-system
+  (global-font-lock-mode nil))
 
 (safe-add-to-alist auto-mode-alist
   ("dotemacs\\'" . lisp-mode)
@@ -192,6 +194,9 @@
   (autoload 'jsr-mode "jsr" nil t)
   (safe-add-to-alist auto-mode-alist
     ("\\.jsr\\'" . jsr-mode)))
+
+;;(autoload 'gamescript-mode "~/src/gamescript/gamescript.el"
+;;  "Mode for editing GameScript source code" t)
 
 (when-feature *ruby*
   (safe-add-to-alist auto-mode-alist
