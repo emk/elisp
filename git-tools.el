@@ -42,9 +42,10 @@
 (defun git-insert-credit ()
   "Insert a credit line in a git commit message"
   (interactive)
-  (let ((type (completing-read "Credit type: " git-credit-headers))
-        (contributor (git-read-contributor "Contributor: ")))
-    (insert-string (concat type ": " contributor))))
+  (let ((completion-ignore-case t))
+    (let ((type (completing-read "Credit type: " git-credit-headers))
+          (contributor (git-read-contributor "Contributor: ")))
+      (insert-string (concat type ": " contributor)))))
 
 ;; Requires git/contrib/emacs/git-blame.el and magit
 (defun git-show-current-commit ()
