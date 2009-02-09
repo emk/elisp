@@ -34,8 +34,18 @@
 
 ;; On Windows, always assume that we have Cygwin.
 ;;
-;; This may have been adapted, in part, from some Emacs Cygwin
+;; This was adapted, in part, from some Emacs Cygwin
 ;; documentation somewhere.
+;;
+;; When running in a Parallels VM, you need to do a number of things get a
+;; reasonable keyboard setup.  I recommend the following:
+;;
+;;   1) Disable Command-ZXCVAF remapping in the Parallels preference
+;;      dialog.
+;;   2) Use SharpKeys to reverse Left-Alt and Left-Windows.
+;;   3) Use the Mac's Keyboard & Mouse control panel to change the shortcut
+;;      for "Quit Parallels Desktop" to something other than Command-Q.
+;;      See http://forum.parallels.com/thread15835.html for details.
 (when (or (eq system-type 'windows-nt)
           (eq system-type 'cygwin))
   ;; I always install Cygwin in Unix mode.
@@ -58,6 +68,9 @@
   ;; appear in the output of java applications.
   (add-hook 'comint-output-filter-functions
             'comint-strip-ctrl-m)
+
+  ;; Map the Windows menu key to Super.
+  (setq w32-apps-modifier 'super)
 
   ;; Add support for Cygwin-style pathnames.
   (require 'cygwin-mount)
