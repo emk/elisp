@@ -1,5 +1,5 @@
 ;;; select.el - A reimplementation of the LISP machine's select key.
-;;; Unreleased proof-of-Concept version, 19 Nov 1999.
+;;; Proof-of-Concept version, 19 Nov 1999.
 ;;;
 ;;; Inspired by Martin Cracauer's implementation at
 ;;; <http://www.cons.org/cracauer/configuration.html>.
