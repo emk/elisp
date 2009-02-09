@@ -50,7 +50,4 @@
 (defun git-show-current-commit ()
   "Show the log message for the current commit"
   (interactive)
-  (let ((text (shell-command-to-string
-               (concat "git log -1 --stat " (git-blame-current-commit)))))
-    (with-output-to-temp-buffer "*git blame*"
-      (princ text))))
+  (magit-show-commit (git-blame-current-commit)))
