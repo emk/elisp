@@ -64,6 +64,10 @@
   (setenv "SHELL" shell-file-name) 
   (setq explicit-shell-file-name shell-file-name) 
 
+  ;; I have both PuTTY and Cygwin OpenSSH installed on my system, and want
+  ;; to use OpenSSH from inside Emacs.
+  (setenv "GIT_SSH" "ssh")
+
   ;; This removes unsightly ^M characters that would otherwise
   ;; appear in the output of java applications.
   (add-hook 'comint-output-filter-functions
