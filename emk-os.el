@@ -19,6 +19,12 @@
   (tool-bar-mode 0) ;; The toolbar is useless.
   (setq mac-allow-anti-aliasing t) ;; or nil
   (jfb-set-mac-font "monaco" 13)
+
+  ;; Bind the fn key as Super.  Sadly, the right Command and Option keys
+  ;; aren't visible as unique keys to Carbon Emacs, though Parallels can
+  ;; see them without any trouble.  Anybody want to patch Carbon Emacs?
+  (setq mac-function-modifier 'super)
+
   ;; Make the keyboard menu work.  I think this has been fixed upstream.
   ;; http://groups.google.com/group/carbon-emacs/browse_thread/thread/b51921f9644b954c
   (when (condition-case nil
