@@ -22,8 +22,21 @@
 ;;; Commentary:
 
 ;; This file contains miscellaneous assorted commands which are helpful for
-;; working with git.  At some point, I'll package these up and turn them
-;; into something real.
+;; working with git.  To use it, you need contrib/emacs/git-blame.el from
+;; the git distribution, and magit from
+;; http://zagadka.vm.bytemark.co.uk/magit/ .
+;; 
+;; To set it up, add something like the following to your .emacs:
+;;
+;;   (require 'magit)
+;;   (autoload 'git-blame-mode "git-blame" "Git blame mode" t)
+;;
+;;   (define-prefix-command 'git-tools)
+;;   (global-set-key "\C-cg" 'git-tools)
+;;   (global-set-key "\C-cgs" 'magit-status)
+;;   (global-set-key "\C-cgc" 'git-insert-credit)
+;;   (global-set-key "\C-cgb" 'git-blame-mode)
+;;   (global-set-key "\C-cgl" 'git-show-current-commit)
 
 (defun git-contributors ()
   "Return the list of git contributors for the current repository"
