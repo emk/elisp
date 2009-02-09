@@ -34,6 +34,7 @@
 ;;   (define-prefix-command 'git-tools)
 ;;   (global-set-key "\C-cg" 'git-tools)
 ;;   (global-set-key "\C-cgs" 'magit-status)
+;;   (global-set-key "\C-cgk" 'gitk)
 ;;   (global-set-key "\C-cgc" 'git-insert-credit)
 ;;   (global-set-key "\C-cgb" 'git-blame-mode)
 ;;   (global-set-key "\C-cgl" 'git-show-current-commit)
@@ -84,3 +85,11 @@
             nil))))
     (when commit
       (magit-show-commit commit))))
+
+(defun gitk ()
+  "Run gitk for the current project"
+  (interactive)
+  (let* ((dir (magit-get-top-dir default-directory))
+         (default-directory dir))
+    (call-process "gitk" nil 0)))
+  

@@ -139,6 +139,7 @@
 (define-prefix-command 'git-tools)
 (global-set-key "\C-cg" 'git-tools)
 (global-set-key "\C-cgs" 'magit-status)
+(global-set-key "\C-cgk" 'gitk)
 (global-set-key "\C-cgc" 'git-insert-credit)
 (global-set-key "\C-cgb" 'git-blame-mode)
 (global-set-key "\C-cgl" 'git-show-current-commit)
