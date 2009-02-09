@@ -126,15 +126,11 @@
 
 (global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
 (global-set-key "\C-cz" 'shell)
-(global-set-key "\C-cs" 'run-scheme)
 (global-set-key "\C-ce" 'eval-region)
 (global-set-key "\C-cm" 'man)
 (global-set-key "\C-cw" 'ispell-word)
 (global-set-key "\C-cr" 'rename-buffer)
 (global-set-key "\C-ci" 'send-invisible)
-(global-set-key "\C-cl" 'eval-last-sexp)
-(global-set-key "\C-cp" 'eval-print-last-sexp)
-(global-set-key "\C-cd" 'run-lisp)
 
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
