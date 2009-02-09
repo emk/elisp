@@ -46,8 +46,15 @@
         (contributor (git-read-contributor "Contributor: ")))
     (insert-string (concat type ": " contributor))))
 
-;; Requires git/contrib/emacs/git-blame.el
+;; Requires git/contrib/emacs/git-blame.el and magit
 (defun git-show-current-commit ()
   "Show the log message for the current commit"
   (interactive)
-  (magit-show-commit (git-blame-current-commit)))
+  (let ((commit
+         (condition-case nil
+             (git-blame-current-commit)
+           (error
+            (message "Turn on git-blame-mode to get commit information")
+            nil))))
+    (when commit
+      (magit-show-commit commit))))
