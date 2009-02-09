@@ -37,7 +37,7 @@
   (completing-read prompt (git-contributors)))
 
 (defconst git-credit-headers
-  '("Paired-with" "Reviewed-by" "Acked-by" "Tested-by"))
+  '("Paired-with" "Reviewed-by" "Acked-by" "Tested-by" "Signed-off-by" "Cc"))
 
 (defun git-insert-credit ()
   "Insert a credit line in a git commit message"
