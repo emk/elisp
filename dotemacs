@@ -71,6 +71,7 @@
 (load "emk-commands")
 (load "emk-os")
 (load "git-tools")
+(load "tdd")
 
 ;;;
 ;;; Active Features

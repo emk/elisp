@@ -74,4 +74,3 @@ command using \\[tdd-run-tests]."
 (global-set-key [?\s-2] 'tdd-run-tests)
 (global-set-key [?\s-3] 'tdd-edit-buffer)
 (global-set-key [?\s-4] 'delete-other-windows)
-(global-set-key [?\s-5] (select:make-raw-switch-command "\\`TODO"))
