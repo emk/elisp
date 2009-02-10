@@ -1,0 +1,21 @@
+diff -r 886bd4446c72 files/prefpane/checkbox.xml
+--- a/files/prefpane/checkbox.xml	Wed Oct 08 19:42:28 2008 +0900
++++ b/files/prefpane/checkbox.xml	Tue Feb 10 08:01:12 2009 -0500
+@@ -1821,6 +1821,17 @@
+             </item>
+           </list>
+         </item>
++        <item>
++          <name>Enable only in Emacs.app</name>
++          <list>
++            <item>
++              <name>Remap Command_R to FN</name>
++              <sysctl>remap.app_emacs_commandR2fn</sysctl>
++              <only>EMACS</only>
++              <autogen>--KeyToKey-- KeyCode::COMMAND_R, KeyCode::FN</autogen>
++            </item>
++          </list>
++        </item>
+       </list>
+     </item>
+ 

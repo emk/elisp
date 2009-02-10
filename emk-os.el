@@ -1,6 +1,15 @@
 ;;;;; Operating-System-Specific Customizations
 
 ;; Customizations for Carbon Emacs on MacOS X.
+;;
+;; Since Carbon Emacs can't distinguish Command_R from Command_L, but I
+;; want to use Command_R as the Super key, I run a patched version of
+;; KeyRemap4MacBook which maps Command_R to Fn _only_ in Emacs.  Then I map
+;; Fn to Super inside of Emacs.  (I don't do the remapping globally,
+;; because I want to pass Command_R to Parallels, where it appears as the
+;; App key, which I also map to Super.)  Yes, I'm weird, but I have a Super
+;; key in the same place on all my machines.  See
+;; KeyRemap4MacBook-remap-fn-for-emacs.diff for the necessary code.
 (when (eq system-type 'darwin)
   ;; Taken from http://www.emacswiki.org/cgi-bin/wiki/MacOSTweaks .
   (defun jfb-set-mac-font (name size)
