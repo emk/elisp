@@ -138,6 +138,7 @@
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
 (global-set-key "\C-cg" 'git-tools)
+(global-set-key [?\s-g] 'magit-status)
 (global-set-key "\C-cgs" 'magit-status)
 (global-set-key "\C-cgk" 'gitk)
 (global-set-key "\C-cgc" 'git-insert-credit)
