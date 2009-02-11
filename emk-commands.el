@@ -51,3 +51,12 @@ when the function is called via `format-alist'."
     ;; that's the only way to get the output of MARK-PARAGRAPH.  Oh, well.
     (unwrap-region (+ (point) 1) (- (mark) 1))
     (pop-mark)))
+
+(defun use-linux-style ()
+  "Force the current buffer to use Linux / git indentation conventions"
+  (interactive)
+  ;; Set up a shell-mode buffer.
+  (setq indent-tabs-mode t
+        sh-indentation 8
+        sh-basic-offset 8))
+  
