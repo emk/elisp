@@ -86,10 +86,21 @@
     (when commit
       (magit-show-commit commit))))
 
+(defmacro with-git-top-dir (&rest body)
+  (let ((dir (gensym)))
+    `(let* ((,dir (magit-get-top-dir default-directory))
+            (default-directory ,dir))
+       ,@body)))
+(defindent with-git-top-dir 0)
+
 (defun gitk ()
   "Run gitk for the current project"
   (interactive)
-  (let* ((dir (magit-get-top-dir default-directory))
-         (default-directory dir))
+  (with-git-top-dir
     (call-process "gitk" nil 0)))
-  
+
+(defun git-grep (shell-args)
+  "Run git grep over the current project with the specified shell arguments"
+  (interactive "sgit grep: ")
+  (with-git-top-dir
+    (compile (concat "git grep -n " shell-args))))
