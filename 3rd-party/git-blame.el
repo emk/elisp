@@ -222,7 +222,7 @@ See also function `git-blame-mode'."
     (let ((display-buf (current-buffer))
           (blame-buf (get-buffer-create
                       (concat " git blame for " (buffer-name))))
-          (args '("--incremental" "--contents" "-")))
+          (args '("-w" "--incremental" "--contents" "-")))
       (if startline
           (setq args (append args
                              (list "-L" (format "%d,%d" startline endline)))))
