@@ -104,3 +104,8 @@
   (interactive "sgit grep: ")
   (with-git-top-dir
     (compile (concat "git grep -n " shell-args))))
+
+(define-minor-mode git-commit-message-mode
+  "Minor mode for editing git commit messages"
+  :init-value nil :lighter " Commit"
+  (set-fill-column 72))
