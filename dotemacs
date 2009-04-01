@@ -85,6 +85,7 @@
 (define-feature *haskell* t)
 (define-feature *predictive* t)
 (define-feature *git* t)
+(define-feature *nxml* t)
 (define-feature *dylan* nil)
 
 ;;;
@@ -255,6 +256,10 @@
   (push-3rd-party-elisp-directory "magit")
   (require 'magit)
   (autoload 'git-blame-mode "git-blame" "Git blame mode" t)) 
+
+(when-feature *nxml*
+  (push-3rd-party-elisp-directory "nxml-mode-20041004")
+  (load "rng-auto"))
 
 (when-feature *dylan*
    (autoload 'dylan-mode
