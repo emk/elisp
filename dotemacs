@@ -119,7 +119,6 @@
 (safe-add-to-alist auto-mode-alist
   ("dotemacs\\'" . lisp-mode)
   ("\\.sgml\\'" . sgml-mode)
-  ("\\.xml\\'" . xml-mode)
   ("\\.cs\\'" . java-mode) ; c-sharp
   ("\\.gs\\'" . gamescript-mode)
   )
@@ -259,7 +258,11 @@
 
 (when-feature *nxml*
   (push-3rd-party-elisp-directory "nxml-mode-20041004")
-  (load "rng-auto"))
+  (load "rng-auto")
+  (autoload 'rnc-mode "rnc-mode" "RELAX NG Compact schema mode" t)
+  (safe-add-to-alist auto-mode-alist
+    ("\\.xml\\'" . nxml-mode)
+    ("\\.rnc\\'" . rnc-mode)))
 
 (when-feature *dylan*
    (autoload 'dylan-mode
