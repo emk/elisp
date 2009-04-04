@@ -347,7 +347,21 @@
   (eval-after-load "anything"
     '(progn
        (require 'anything-config)
-       (require 'anything-match-plugin))))
+       (require 'anything-match-plugin)))
+
+  (setq anything-sources
+        '(anything-c-source-buffers+
+          anything-c-source-file-name-history
+          anything-c-source-imenu
+          anything-c-source-files-in-current-dir+
+          ;;project-root-anything-config-files - find broken
+          anything-c-source-complex-command-history
+          ;;anything-c-source-info-pages - broken
+          anything-c-source-info-elisp
+          anything-c-source-man-pages
+          anything-c-source-lacarte
+          anything-c-source-emacs-commands
+          )))
 
 (when-feature *dylan*
    (autoload 'dylan-mode
