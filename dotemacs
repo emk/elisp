@@ -27,8 +27,11 @@
 ;;;
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(auto-install-directory "~/w/elisp/3rd-party/auto-install/")
  '(c-basic-offset 4)
  '(current-language-environment "UTF-8")
  '(indent-tabs-mode nil)
@@ -37,8 +40,10 @@
  '(whitespace-global-mode nil nil (whitespace)))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :family "adobe-courier"))))
  '(font-lock-comment-face ((((class color)) (:foreground "Firebrick"))))
  '(font-lock-function-name-face ((((class color)) (:foreground "DarkGreen"))))
@@ -77,6 +82,7 @@
 ;;; Active Features
 ;;;
 
+(define-feature *auto-install* t)
 (define-feature *select* nil)
 (define-feature *javascript* t)
 (define-feature *planetary* t)
@@ -171,6 +177,10 @@
 
 ;; My favorite Emacs completion mode.
 (load "complete")
+
+(when-feature *auto-install*
+  (push-3rd-party-elisp-directory (concat "auto-install"))
+  (require 'auto-install))
 
 (when-feature *select*
   (load "select"))
