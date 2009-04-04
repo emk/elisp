@@ -96,6 +96,7 @@
 (define-feature *predictive* t)
 (define-feature *git* t)
 (define-feature *nxml* t)
+(define-feature *project-root* t)
 (define-feature *anything* t)
 (define-feature *dylan* nil)
 
@@ -314,6 +315,30 @@
     ("\\.xml\\'" . nxml-mode)
     ("\\.xslt\\'" . nxml-mode)
     ("\\.rnc\\'" . rnc-mode)))
+
+(when-feature *project-root*
+  (require 'project-root)
+
+  ;; Configure our project types.
+  (setq project-roots
+        '(("Generic Git Project"
+           :root-contains-files (".git")))
+        )
+
+  ;; A modified version of project-root-find-file from project-root.el.
+  (defun project-root-ido-find-file ()
+    "Find a file from a list of those that exist in the current project."
+    (interactive)
+    (with-project-root (call-interactively 'ido-find-file)))
+
+  ;; Keybindings from project-root.el.
+  (global-set-key (kbd "C-c p f") 'project-root-ido-find-file)
+  (global-set-key (kbd "C-c p g") 'project-root-grep)
+  (global-set-key (kbd "C-c p a") 'project-root-ack)
+  (global-set-key (kbd "C-c p d") 'project-root-goto-root)
+  (global-set-key (kbd "C-c p p") 'project-root-run-default-command)
+  (global-set-key (kbd "C-c p M-x")
+                  'project-root-execute-extended-command))
 
 (when-feature *anything*
   ;; I'm just experimenting with this.  I don't actually know whether it's
