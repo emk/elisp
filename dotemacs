@@ -262,6 +262,7 @@
   (autoload 'rnc-mode "rnc-mode" "RELAX NG Compact schema mode" t)
   (safe-add-to-alist auto-mode-alist
     ("\\.xml\\'" . nxml-mode)
+    ("\\.xslt\\'" . nxml-mode)
     ("\\.rnc\\'" . rnc-mode)))
 
 (when-feature *dylan*
