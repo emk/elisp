@@ -96,6 +96,7 @@
 (define-feature *predictive* t)
 (define-feature *git* t)
 (define-feature *nxml* t)
+(define-feature *anything* t)
 (define-feature *dylan* nil)
 
 ;;;
@@ -145,6 +146,7 @@
 (global-set-key "\C-cr" 'rename-buffer)
 (global-set-key "\C-ci" 'send-invisible)
 (global-set-key "\C-cd" 'find-dotemacs)
+(global-set-key [?\s-a] 'anything)
 
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
@@ -312,6 +314,15 @@
     ("\\.xml\\'" . nxml-mode)
     ("\\.xslt\\'" . nxml-mode)
     ("\\.rnc\\'" . rnc-mode)))
+
+(when-feature *anything*
+  ;; I'm just experimenting with this.  I don't actually know whether it's
+  ;; useful yet.
+  (autoload 'anything "anything" "Select anything and perform an action" t)
+  (eval-after-load "anything"
+    '(progn
+       (require 'anything-config)
+       (require 'anything-match-plugin))))
 
 (when-feature *dylan*
    (autoload 'dylan-mode
