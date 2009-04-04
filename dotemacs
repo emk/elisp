@@ -35,6 +35,7 @@
  '(c-basic-offset 4)
  '(current-language-environment "UTF-8")
  '(ido-confirm-unique-completion t)
+ '(ido-enable-dot-prefix t)
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
