@@ -47,3 +47,4 @@
 (defindent define-dylan-abbrevs 0)
 (defindent eval-after-load 1)
 (defindent letrec 1)
+(defindent snippet-with-abbrev-table 1)

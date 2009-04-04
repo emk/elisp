@@ -179,12 +179,16 @@
 ;;; Mode configuration.
 ;;;
 
-;; My favorite Emacs completion mode.
-(require 'complete)
-
+;; Set this up first, in case other code depends on it.
 (when-feature *auto-install*
   (push-3rd-party-elisp-directory (concat "auto-install"))
   (require 'auto-install))
+
+;; My favorite Emacs completion mode.
+(require 'complete)
+
+;; Make snippets available to all modes.
+(require 'snippet)
 
 (when-feature *select*
   (load "select"))
@@ -243,7 +247,37 @@
       :back "%>")))
 
   (mmm-add-mode-ext-class nil "\\.html\\.erb\\'" 'embedded-ruby)
-  
+
+  (defun ruby-body-snippet (start)
+    (concat start "\n$>$.\nend$>"))
+
+  (define-abbrev-table 'ruby-mode-abbrev-table '())
+  (snippet-with-abbrev-table 'ruby-mode-abbrev-table
+    ("module" . (ruby-body-snippet "module $${Name}"))
+    ("class" . (ruby-body-snippet "class $${Name}"))
+    ("if" . (ruby-body-snippet "if $${cond}"))
+    ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
+    )
+
+  (defun inside-ruby-comment-p ()
+    (save-excursion (beginning-of-line) (looking-at "\\s-*#")))
+
+  (defun line-only-contains-abbrev-p ()
+    (save-excursion (beginning-of-line) (looking-at "\\s-*\\S-+$")))
+
+  (defun ruby-pre-abbrev-expand ()
+    ;; This code is adapted from the snippet.el documentation.
+    (setq local-abbrev-table
+          (cond
+           ((inside-ruby-comment-p) text-mode-abbrev-table)
+           ((line-only-contains-abbrev-p) ruby-mode-abbrev-table)
+           (t nil))))
+
+  (defun ruby-snippet-setup ()
+    (abbrev-mode 1)
+    (add-hook 'pre-abbrev-expand-hook 'ruby-pre-abbrev-expand))
+  (add-hook 'ruby-mode-hook 'ruby-snippet-setup)
+
   )
 
 (when-feature *slime*
