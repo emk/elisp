@@ -34,6 +34,9 @@
  '(auto-install-directory "~/w/elisp/3rd-party/auto-install/")
  '(c-basic-offset 4)
  '(current-language-environment "UTF-8")
+ '(ido-confirm-unique-completion t)
+ '(ido-enable-flex-matching t)
+ '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(whitespace-check-indent-whitespace nil)
@@ -176,7 +179,7 @@
 ;;;
 
 ;; My favorite Emacs completion mode.
-(load "complete")
+(require 'complete)
 
 (when-feature *auto-install*
   (push-3rd-party-elisp-directory (concat "auto-install"))
