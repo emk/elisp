@@ -1,3 +1,6 @@
 [submodule "3rd-party/magit"]
 	path = 3rd-party/magit
 	url = git://gitorious.org/magit/mainline.git
+[submodule "3rd-party/rinari"]
+	path = 3rd-party/rinari
+	url = git://github.com/eschulte/rinari.git

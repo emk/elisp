@@ -8,6 +8,7 @@ To download this repository:
   git clone git://github.com/emk/elisp.git
   cd elisp
   git submodule update --init
+  git submodule foreach git submodule update --init
   cd ../..
 
 To install it on a Unix-like system:

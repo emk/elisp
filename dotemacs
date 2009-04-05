@@ -224,6 +224,10 @@
 ;;  "Mode for editing GameScript source code" t)
 
 (when-feature *ruby*
+  ;; Rinari is hugely useful for nagivating around inside a Rails application.
+  (push-3rd-party-elisp-directory "rinari")
+  (require 'rinari)
+
   (safe-add-to-alist auto-mode-alist
     ("\\.rb\\'" . ruby-mode)
     ("Rakefile\\'" . ruby-mode)
