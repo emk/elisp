@@ -262,6 +262,7 @@
   (snippet-with-abbrev-table 'ruby-mode-abbrev-table
     ("module" . (ruby-body-snippet "module $${Name}"))
     ("class" . (ruby-body-snippet "class $${Name}"))
+    ("def" . (ruby-body-snippet "def $${name}"))
     ("if" . (ruby-body-snippet "if $${cond}"))
     ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
     )
