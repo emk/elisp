@@ -1,5 +1,6 @@
 ;;; select.el - A reimplementation of the LISP machine's select key.
 ;;; Proof-of-Concept version, 19 Nov 1999.
+;;; Updated April 2009.
 ;;;
 ;;; Inspired by Martin Cracauer's implementation at
 ;;; <http://www.cons.org/cracauer/configuration.html>.
@@ -36,12 +37,14 @@
 ;;;   * select:switch-to-next-matching-buffer
 ;;;
 ;;; Eric Kidd
-;;; <eric.kidd@pobox.com>
 
-(defvar select:*alternate-buffers* nil)
 
-(defun select:buffer-match-p (predicate-or-regex buffer)
-  "Return true if 'buffer' matches 'predicate-or-regex'."
+;;=========================================================================
+;;  Generating lists of matching buffers
+;;=========================================================================
+
+;; Return true if 'buffer' matches 'predicate-or-regex'.
+(defun select::buffer-match-p (predicate-or-regex buffer)
   (cond ((stringp predicate-or-regex)
 	 (string-match predicate-or-regex (buffer-name buffer)))
 	((functionp predicate-or-regex)
@@ -49,84 +52,94 @@
 	(t
 	 (error "Unrecognized predicate type in select:buffer-match-p."))))
 
-(defun select:find-matching-buffers (predicate-or-regex)
-  "Return all the buffers matching 'predicate-or-regex'."
-  (select:find-matching-buffers-recursive predicate-or-regex (buffer-list)))
+;; "Return all items in 'buffers' which match 'predicate-or-regex'."
+(defun select::find-matching-buffers (predicate-or-regex)
+  (loop for buffer in (buffer-list)
+        if (select::buffer-match-p predicate-or-regex buffer)
+        collect buffer))
 
-(defun select:find-matching-buffers-recursive (predicate-or-regex buffers)
-  "Return all items in 'buffers' which match 'predicate-or-regex'."
-  (if buffers
-      (let ((tail (select:find-matching-buffers-recursive predicate-or-regex
-							  (cdr buffers))))
-	(if (select:buffer-match-p predicate-or-regex (car buffers))
-	    (cons (car buffers) tail)
-	  tail))
-    nil))
 
-(defun select:switch-to-first-matching-buffer (predicate-or-regex)
-  "Switch to the most recently used buffer matching 'predicate-or-regex'."
-  (let ((buffers (select:find-matching-buffers predicate-or-regex)))
-    (if (and buffers (eql (car buffers) (current-buffer)))
-	(setq buffers (cdr buffers)))
-    (if (not buffers)
-	(error "No matching buffers are open.")
-      (switch-to-buffer (car buffers))
-      (setq select:*alternate-buffers* (cdr buffers)))))
+;;=========================================================================
+;;  Switching to a buffer
+;;=========================================================================
 
-(defun select:switch-to-next-matching-buffer ()
-  "Switch to the next most recent buffer matching a pattern."
-  (interactive)
-  (if (not select:*alternate-buffers*)
-      (error "No more matching buffers.")
-    (switch-to-buffer (car select:*alternate-buffers*))
-    (setq select:*alternate-buffers* (cdr select:*alternate-buffers*))))
+;; When this timer fires, it will run select::record-visit-to-buffer.
+(defvar select::*buffer-list-update-timer* nil)
+
+;; The last buffer we visited using select:switch-to-buffer.
+(defvar select::*stopped-at-buffer* nil)
+
+;; If we're still in select::*stopped-at-buffer*, add it to the list of
+;; recently visited buffers.
+(defun select::record-visit-to-buffer ()
+  (setq select::*buffer-list-update-timer* nil)
+  (when (eq (current-buffer) select::*stopped-at-buffer*)
+    (switch-to-buffer (current-buffer))))
+
+(defun select:switch-to-buffer (buffer)
+  "Switch to 'buffer', updating recently selected buffers only if we stay."
+  (interactive "bBuffer: ")
+  (switch-to-buffer buffer t)
+  (setq select::*stopped-at-buffer* (current-buffer))
+  (when select::*buffer-list-update-timer*
+    (cancel-timer select::*buffer-list-update-timer*)
+    (setq select:*buffer-list-update-timer* nil))
+  (setq select::*buffer-list-update-timer*
+        (run-at-time "2 sec" nil 'select::record-visit-to-buffer)))
+
+(defun select:currently-cycling-p ()
+  "Returns true if we're currently cycling through a list of buffers."
+  (and select::*buffer-list-update-timer* t))
+
+
+;;=========================================================================
+;;  Cycling through lists of buffers
+;;=========================================================================
+
+;; The pattern we used for generating 'select::*buffers-to-visit*'.
+(defvar select::*most-recent-predicate-or-regex* nil)
+
+;; A list of buffers to visit.
+(defvar select::*buffers-to-visit* nil)
+
+(defun select:switch-to-buffer-matching (predicate-or-regex)
+  """Switch to a buffer matching 'predicate-or-regex'.
+
+If called repeatedly with an 'equal' value of 'predicate-or-regex', cycles
+through all matching buffers."""
+  (interactive "sBuffer regex: ")
+  (unless (and (select:currently-cycling-p)
+               (equal predicate-or-regex
+                      select::*most-recent-predicate-or-regex*))
+    (setq select::*most-recent-predicate-or-regex* predicate-or-regex)
+    (setq select::*buffers-to-visit*
+          (remove (current-buffer)
+                  (select::find-matching-buffers predicate-or-regex))))
+  (when (not select::*buffers-to-visit*)
+    (error "No more matching buffers."))
+  (select:switch-to-buffer (pop select::*buffers-to-visit*)))
+
+
+;;=========================================================================
+;;  Switch commands
+;;=========================================================================
 
 (defun select:make-raw-switch-command (predicate-or-regex)
   "Construct a command which calls select:find-matching-buffers."
   `(lambda ()
      ,(format "Switch to first buffer matching '%s'." predicate-or-regex)
      (interactive)
-     (select:switch-to-first-matching-buffer ,predicate-or-regex)))
+     (select:switch-to-buffer-matching ,predicate-or-regex)))
 
 (defun select:make-switch-command (extensions)
   (select:make-raw-switch-command
-   (concat "\\.\\("
-	   (select:join-strings "\\|" extensions)
-	   "\\)\\(<[0-9]+>\\)?\\'")))
-
-(defun select:join-strings (joiner strings)
-  "Join the strings in 'strings' together using 'joiner' (like Perl's join)."
-  (cond ((not strings)
-	 "")
-	((cdr strings)
-	 (concat (car strings)
-		 joiner
-		 (select:join-strings joiner (cdr strings))))
-	(t
-	 (car strings))))
+   (concat "\\." (regex-opt extensions t) "\\(<[0-9]+>\\)?\\'")))
 
 ;;; Sample bindings
 ;;;
 ;;; These are temporary demo bindings.
 
-(global-set-key [s-tab] 'select:switch-to-next-matching-buffer)
-
 (global-set-key [?\s-l] (select:make-switch-command '("lsp" "lisp" "el")))
 (global-set-key [?\s-c] (select:make-switch-command '("c" "cpp" "cp" "cc")))
 (global-set-key [?\s-h] (select:make-switch-command '("h")))
-
-(global-set-key [?\s-t] (select:make-raw-switch-command "\\`TODO"))
-(global-set-key [?\s-m] (select:make-raw-switch-command "\\`*Man "))
-(global-set-key [?\s-r] (select:make-raw-switch-command "\\`README"))
-(global-set-key [?\s-b] (select:make-raw-switch-command "*build*"))
-(global-set-key [?\s-a] (select:make-raw-switch-command "\\`\\(Makefile\\|configure.in\\)"))
-(global-set-key [?\s-g] (select:make-raw-switch-command "*gud-"))
-
-;; "Creator" bindings for some of the buffer types above.
-(global-set-key [?\s-\C-g] 'gdb)
-(global-set-key [?\s-\C-m] 'man)
-
-(global-set-key [?\s-z] 'shell)
-(global-set-key [?\s-n] 'run-lisp)
-(global-set-key [?\s-k] 'compile)
-(global-set-key [?\s-`] 'next-error)
+(global-set-key [?\s-r] (select:make-switch-command '("rb")))
