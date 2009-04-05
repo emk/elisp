@@ -232,15 +232,11 @@
     ("\\.rb\\'" . ruby-mode)
     ("Rakefile\\'" . ruby-mode)
     ("\\.rhtml\\'" . html-mode)
-    ("\\.css\\'" . css-mode))
+    ("\\.css\\'" . css-mode)
+    ("\\.yml\\'" . yaml-mode))
 
   (autoload 'ruby-mode "ruby-mode" "Mode for editing Ruby files" t)
-  ;;(autoload 'css-mode
-  ;;  "/usr/share/emacs21/site-lisp/css-mode/css-mode"
-  ;;  "Mode for editing Ruby files" t)
-
-  ;;(require 'generic-x)
-  ;;add-to-list 'generic-extras-enable-list 'javascript-generic-mode)
+  (autoload 'yaml-mode "yaml-mode" "Mode for editing YAML files" t)
 
   (push-3rd-party-elisp-directory "mmm-mode-0.4.8")
   (require 'mmm-auto)
