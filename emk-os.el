@@ -29,6 +29,19 @@
   (setq mac-allow-anti-aliasing t) ;; or nil
   (jfb-set-mac-font "monaco" 13)
 
+  ;; For some odd reason, Carbon Emacs doesn't seem to see any of the
+  ;; values set in .profile.  So let's make a token effort to set up a
+  ;; reasonable environment.
+  (setenv "PS1" "\\u@\\h \\W\\$ ")
+  (setenv "MANPATH"
+          (concat "/opt/local/man:/usr/share/man:/usr/local/share/man:"
+                  "/usr/X11/man:~/man"))
+
+  ;; Explicitly unset GIT_PAGER so that git stops trying to use pagers in
+  ;; inferior shell buffers.  I have no idea why this only seems to happen
+  ;; on the Mac.
+  (setenv "GIT_PAGER" "")
+
   ;; Bind the fn key as Super.  Sadly, the right Command and Option keys
   ;; aren't visible as unique keys to Carbon Emacs, though Parallels can
   ;; see them without any trouble.  Anybody want to patch Carbon Emacs?
