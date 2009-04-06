@@ -102,6 +102,25 @@
 ;; A list of buffers to visit.
 (defvar select::*buffers-to-visit* nil)
 
+;; A list of buffers we've already visited.
+(defvar select::*buffers-visited* nil)
+
+(defun select:switch-to-next-buffer ()
+  "Switch to the next buffer in the most recent select cycle."
+  (interactive)
+  (unless select::*buffers-to-visit*
+    (error "No more matching buffers."))
+  (push (pop select::*buffers-to-visit*) select::*buffers-visited*)
+  (select:switch-to-buffer (car select::*buffers-visited*)))
+
+(defun select:switch-to-prev-buffer ()
+  "Switch to the next buffer in the most recent select cycle."
+  (interactive)
+  (unless (and select::*buffers-visited* (cdr select::*buffers-visited*))
+    (error "No more matching buffers."))
+  (push (pop select::*buffers-visited*) select::*buffers-to-visit*)
+  (select:switch-to-buffer (car select::*buffers-visited*)))
+
 (defun select:switch-to-buffer-matching (predicate-or-regex)
   """Switch to a buffer matching 'predicate-or-regex'.
 
@@ -114,10 +133,9 @@ through all matching buffers."""
     (setq select::*most-recent-predicate-or-regex* predicate-or-regex)
     (setq select::*buffers-to-visit*
           (remove (current-buffer)
-                  (select::find-matching-buffers predicate-or-regex))))
-  (when (not select::*buffers-to-visit*)
-    (error "No more matching buffers."))
-  (select:switch-to-buffer (pop select::*buffers-to-visit*)))
+                  (select::find-matching-buffers predicate-or-regex)))
+    (setq select::*buffers-visited* (list (current-buffer))))
+  (select:switch-to-next-buffer))
 
 
 ;;=========================================================================
@@ -133,11 +151,14 @@ through all matching buffers."""
 
 (defun select:make-switch-command (extensions)
   (select:make-raw-switch-command
-   (concat "\\." (regex-opt extensions t) "\\(<[0-9]+>\\)?\\'")))
+   (concat "\\." (regexp-opt extensions t) "\\(<[0-9]+>\\)?\\'")))
 
 ;;; Sample bindings
 ;;;
 ;;; These are temporary demo bindings.
+
+(global-set-key [?\s-\[] 'select:switch-to-prev-buffer)
+(global-set-key [?\s-\]] 'select:switch-to-next-buffer)
 
 (global-set-key [?\s-l] (select:make-switch-command '("lsp" "lisp" "el")))
 (global-set-key [?\s-c] (select:make-switch-command '("c" "cpp" "cp" "cc")))

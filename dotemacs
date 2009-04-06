@@ -87,7 +87,7 @@
 ;;;
 
 (define-feature *auto-install* t)
-(define-feature *select* nil)
+(define-feature *select* t)
 (define-feature *javascript* t)
 (define-feature *planetary* t)
 (define-feature *ruby* t)
