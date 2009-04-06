@@ -1,8 +1,3 @@
-(defun switch-to-build-shell ()
-  "Switch to a buffer named *build*"
-  (interactive)
-  (switch-to-buffer "*build*"))
-
 (defun insert-block-comment ()
   "Insert a block comment in a C file"
   (interactive)

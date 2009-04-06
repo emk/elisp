@@ -140,7 +140,7 @@
 ;;;
 
 (global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
-(global-set-key "\C-cz" 'shell)
+(global-set-key "\C-cz" 'eshell)
 (global-set-key "\C-ce" 'eval-region)
 (global-set-key "\C-cm" 'man)
 (global-set-key "\C-cw" 'ispell-word)
@@ -161,7 +161,6 @@
 (global-set-key "\C-cgg" 'git-grep)
 
 ;; From emk-commands.el.
-(global-set-key "\C-cb" 'switch-to-build-shell)
 (global-set-key "\C-cc" 'insert-block-comment)
 
 ;;;
