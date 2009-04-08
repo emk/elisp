@@ -33,6 +33,7 @@
   ;; values set in .profile.  So let's make a token effort to set up a
   ;; reasonable environment.
   (setenv "PS1" "\\u@\\h \\W\\$ ")
+  (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
   (setenv "MANPATH"
           (concat "/opt/local/man:/usr/share/man:/usr/local/share/man:"
                   "/usr/X11/man:~/man"))
