@@ -193,7 +193,9 @@
 (require 'snippet)
 
 (when-feature *select*
-  (load "select"))
+  (load "select")
+  (global-set-key [?\s-`] 'next-error)
+  (global-set-key [?\s-s] (select:make-switch-command '("ss" "scm"))))
 
 (autoload 'halyard-mode
   (if (file-exists-p "~/src/halyard/tools/halyard.el")
