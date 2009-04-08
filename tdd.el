@@ -27,17 +27,17 @@
 (defvar *tdd-test-buffer* nil)
 (defvar *tdd-test-command* nil)
 
-(defun tdd-set-edit-buffer (buffer)
+(defun tdd-set-edit-buffer (&optional buffer)
   "Set the name of the source code buffer you're editing while performing
 test-driver design.  You can jump to this buffer with \\[tdd-edit-buffer]."
-  (interactive "bName of TDD edit buffer: ")
-  (setq *tdd-edit-buffer* buffer))
+  (interactive)
+  (setq *tdd-edit-buffer* (or buffer (current-buffer))))
 
-(defun tdd-set-test-buffer (buffer)
+(defun tdd-set-test-buffer (&optional buffer)
   "Set the name of the test suite buffer you're editing while performing
 test-driver design.  You can jump to this buffer with \\[tdd-test-buffer]."
-  (interactive "bName of TDD test buffer: ")
-  (setq *tdd-test-buffer* buffer))
+  (interactive)
+  (setq *tdd-test-buffer* (or buffer (current-buffer))))
 
 (defun tdd-set-test-command (command)
   "Set the command used to run your test suites.  You can run this
