@@ -281,6 +281,7 @@
 
   (defun ruby-snippet-setup ()
     (abbrev-mode 1)
+    (make-variable-buffer-local 'pre-abbrev-expand-hook)
     (add-hook 'pre-abbrev-expand-hook 'ruby-pre-abbrev-expand))
   (add-hook 'ruby-mode-hook 'ruby-snippet-setup)
 
