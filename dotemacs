@@ -265,6 +265,9 @@
     ("def" . (ruby-body-snippet "def $${name}"))
     ("if" . (ruby-body-snippet "if $${cond}"))
     ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
+    ("it" . (ruby-body-snippet "it \"should $${something}\" do"))
+    ("describe" . (ruby-body-snippet "describe $${Context} do"))
+    ("before" . (ruby-body-snippet "before do"))
     )
 
   (defun inside-ruby-comment-p ()
