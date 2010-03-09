@@ -307,6 +307,17 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
+;; Google's "Go" language.
+(when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
+  (setenv "GOROOT" "/Users/emk/src/go")
+  (setenv "GOARCH" "386")
+  (setenv "GOOS" "darwin")
+  (setenv "GOBIN" "/opt/go/bin")
+  (setenv "PATH" (concat (getenv "GOBIN") ":" (getenv "PATH")))
+
+  (setq load-path (cons "~/src/go/misc/emacs/" load-path))
+  (load "go-mode-load.el"))
+
 (when-feature *predictive*
   (push-3rd-party-elisp-directory "predictive")
   (autoload 'predictive-mode "predictive" "Predictive Input Mode" t))
