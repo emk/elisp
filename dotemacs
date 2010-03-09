@@ -96,6 +96,7 @@
 (define-feature *predictive* t)
 (define-feature *git* t)
 (define-feature *nxml* t)
+(define-feature *cucumber* t)
 (define-feature *project-root* t)
 (define-feature *anything* t)
 (define-feature *dylan* nil)
@@ -319,6 +320,12 @@
     ("\\.xml\\'" . nxml-mode)
     ("\\.xslt\\'" . nxml-mode)
     ("\\.rnc\\'" . rnc-mode)))
+
+(when-feature *cucumber*
+  (push-3rd-party-elisp-directory "cucumber")
+  (autoload 'feature-mode "feature-mode" "Cucumber feature mode" t)
+  (safe-add-to-alist auto-mode-alist
+    ("\\.feature\\'" . feature-mode)))
 
 (when-feature *project-root*
   (require 'project-root)

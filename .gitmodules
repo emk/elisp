@@ -4,3 +4,6 @@
 [submodule "3rd-party/rinari"]
 	path = 3rd-party/rinari
 	url = git://github.com/eschulte/rinari.git
+[submodule "3rd-party/cucumber"]
+	path = 3rd-party/cucumber
+	url = git://github.com/michaelklishin/cucumber.el.git
