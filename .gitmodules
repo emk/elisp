@@ -7,3 +7,6 @@
 [submodule "3rd-party/cucumber"]
 	path = 3rd-party/cucumber
 	url = git://github.com/michaelklishin/cucumber.el.git
+[submodule "3rd-party/sinasi"]
+	path = 3rd-party/sinasi
+	url = git://github.com/emk/sinasi.git
