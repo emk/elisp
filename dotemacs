@@ -197,7 +197,7 @@
 (when-feature *select*
   (load "select")
   (global-set-key [?\s-`] 'next-error)
-  (global-set-key [?\s-s] (select:make-switch-command '("ss" "scm")))
+  ;;(global-set-key [?\s-s] (select:make-switch-command '("ss" "scm")))
   (global-set-key [?\s-t] (select:make-switch-command '("txt"))))
 
 (autoload 'halyard-mode
@@ -282,11 +282,13 @@
   )
 
 (when-feature *javascript*
-  (autoload 'javascript-mode "javascript" nil t)
+  (autoload 'javascript-mode "javascript-mode" nil t)
   (safe-add-to-alist auto-mode-alist
     ("\\.js\\'" . javascript-mode))
+
   (push-3rd-party-elisp-directory "sinasi")
-  (require 'sinasi))
+  (require 'sinasi)
+  (sinasi-bind-finders-with-prefix ?\s-s))
 
 (when-feature *planetary*
   (push "~/src/planetary/tools" load-path)
