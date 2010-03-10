@@ -224,6 +224,8 @@
   (safe-add-to-alist auto-mode-alist
     ("\\.rb\\'" . ruby-mode)
     ("Rakefile\\'" . ruby-mode)
+    ("\\.rake\\'" . ruby-mode)
+    ("Buildfile\\'" . ruby-mode)
     ("\\.rhtml\\'" . html-mode)
     ("\\.css\\'" . css-mode)
     ("\\.yml\\'" . yaml-mode))
