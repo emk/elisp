@@ -231,7 +231,11 @@
     ("Rakefile\\'" . ruby-mode)
     ("\\.rake\\'" . ruby-mode)
     ("Buildfile\\'" . ruby-mode)
+    ("Gemfile\\'" . ruby-mode)
+    ("config\\.ru\\'" . ruby-mode)
+    ("\\.rake\\'" . ruby-mode)
     ("\\.rhtml\\'" . html-mode)
+    ("\\.builder\\'" . ruby-mode)
     ("\\.css\\'" . css-mode)
     ("\\.yml\\'" . yaml-mode))
 
