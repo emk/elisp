@@ -10,3 +10,6 @@
 [submodule "3rd-party/sinasi"]
 	path = 3rd-party/sinasi
 	url = git://github.com/emk/sinasi.git
+[submodule "3rd-party/coffee-mode"]
+	path = 3rd-party/coffee-mode
+	url = http://github.com/defunkt/coffee-mode.git
