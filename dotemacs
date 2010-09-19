@@ -284,9 +284,9 @@
   )
 
 (when-feature *javascript*
-  (autoload 'javascript-mode "javascript-mode" nil t)
+  (autoload 'js2-mode "js2" nil t)
   (safe-add-to-alist auto-mode-alist
-    ("\\.js\\'" . javascript-mode))
+    ("\\.js\\'" . js2-mode))
 
   (push-3rd-party-elisp-directory "sinasi")
   (require 'sinasi)
