@@ -192,6 +192,10 @@
 ;; My favorite Emacs completion mode.
 (require 'complete)
 
+;; ido-style completion for command names.
+(require 'smex)
+(smex-initialize)
+
 ;; Make snippets available to all modes.
 (require 'snippet)
 
