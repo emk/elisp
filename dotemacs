@@ -91,6 +91,7 @@
 (define-feature *select* t)
 (define-feature *ruby* t)
 (define-feature *javascript* t)
+(define-feature *coffeescript* t)
 (define-feature *planetary* t)
 (define-feature *slime* nil)
 (define-feature *haskell* t)
@@ -291,6 +292,14 @@
   (push-3rd-party-elisp-directory "sinasi")
   (require 'sinasi)
   (sinasi-bind-finders-with-prefix ?\s-s))
+
+(when-feature *coffeescript*
+  (push-3rd-party-elisp-directory "coffee-mode")
+  (autoload 'coffee-mode "coffee-mode" nil t)
+  (safe-add-to-alist auto-mode-alist
+    ("\\.coffee\\'" . coffee-mode))
+  (safe-add-hook coffee-mode-hook coffee-mode-customizations ()
+    (set (make-local-variable 'tab-width) 2)))
 
 (when-feature *planetary*
   (push "~/src/planetary/tools" load-path)
