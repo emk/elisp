@@ -310,8 +310,10 @@
   (autoload 'coffee-mode "coffee-mode" nil t)
   (safe-add-to-alist auto-mode-alist
     ("\\.coffee\\'" . coffee-mode))
+  ;; Coffee-mode has messed up tab-width handling, so fix it manually.
+  (setq coffee-tab-width 2)
   (safe-add-hook coffee-mode-hook coffee-mode-customizations ()
-    (set (make-local-variable 'tab-width) 2)))
+    (set (make-local-variable 'tab-width) coffee-tab-width)))
 
 (when-feature *planetary*
   (push "~/src/planetary/tools" load-path)
