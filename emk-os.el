@@ -1,5 +1,14 @@
 ;;;;; Operating-System-Specific Customizations
 
+;; Customizations for Linux.
+(when (eq system-type 'gnu-linux)
+  ;; Make the clipboard work correctly under X11.  How many times will
+  ;; Emacs clipboard handling need to break under X, anyway?  From
+  ;; http://ubuntuforums.org/archive/index.php/t-310237.html
+  (setq x-select-enable-clipboard t)
+  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+  )
+
 ;; Customizations for Carbon Emacs on MacOS X.
 ;;
 ;; Since Carbon Emacs can't distinguish Command_R from Command_L, but I
