@@ -42,6 +42,9 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(javascript-indent-level 2)
+ '(menu-bar-mode nil)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
  '(whitespace-check-indent-whitespace nil)
  '(whitespace-global-mode nil nil (whitespace)))
 
