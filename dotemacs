@@ -33,6 +33,7 @@
   ;; If there is more than one, they won't work right.
  '(auto-install-directory "~/w/elisp/3rd-party/auto-install/")
  '(c-basic-offset 4)
+ '(column-number-mode t)
  '(current-language-environment "UTF-8")
  '(ido-confirm-unique-completion t)
  '(ido-enable-dot-prefix t)
