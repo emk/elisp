@@ -35,6 +35,7 @@
  '(c-basic-offset 4)
  '(column-number-mode t)
  '(current-language-environment "UTF-8")
+ '(display-time-mode t)
  '(ido-confirm-unique-completion t)
  '(ido-enable-dot-prefix t)
  '(ido-enable-flex-matching t)
