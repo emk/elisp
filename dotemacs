@@ -101,6 +101,7 @@
 (define-feature *planetary* t)
 (define-feature *slime* nil)
 (define-feature *haskell* t)
+(define-feature *scala* t)
 (define-feature *predictive* t)
 (define-feature *git* t)
 (define-feature *nxml* t)
@@ -338,6 +339,10 @@
   (load "haskell-site-file")
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+
+(when-feature *scala*
+  (push-3rd-party-elisp-directory "scala")
+  (require 'scala-mode-auto))
 
 ;; Google's "Go" language.
 (when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
