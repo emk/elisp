@@ -55,4 +55,9 @@ when the function is called via `format-alist'."
         sh-indentation 8
         sh-basic-offset 8
         c-basic-offset 8))
-  
+
+(defun find-todo ()
+  "Find today's todo file, creating it if necessary."
+  (interactive)
+  (let ((path (format-time-string "~/doc/todo/%Y%m%d.txt")))
+    (find-file path)))
