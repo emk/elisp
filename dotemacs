@@ -198,8 +198,9 @@
 (require 'complete)
 
 ;; ido-style completion for command names.
-(require 'smex)
-(smex-initialize)
+;; Disabled because it causes errors on Ubuntu 10.10 Emacs 23.
+;;(require 'smex)
+;;(smex-initialize)
 
 ;; Make snippets available to all modes.
 (require 'snippet)
