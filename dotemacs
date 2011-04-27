@@ -45,6 +45,7 @@
  '(inhibit-startup-screen t)
  '(javascript-indent-level 2)
  '(menu-bar-mode nil)
+ '(safe-local-variable-values (quote ((encoding . utf-8) (ruby-compilation-executable . "ruby") (ruby-compilation-executable . "ruby1.8") (ruby-compilation-executable . "ruby1.9") (ruby-compilation-executable . "rbx") (ruby-compilation-executable . "jruby"))))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(whitespace-check-indent-whitespace nil)
