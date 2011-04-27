@@ -2,3 +2,5 @@
 .DS_Store
 /obsolete
 /3rd-party/js2.elc
+/3rd-party/scala/.latest-build
+/3rd-party/scala/*.elc
