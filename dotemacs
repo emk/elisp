@@ -95,6 +95,7 @@
 ;;;
 
 (define-feature *auto-install* t)
+(define-feature *ledger* t)
 (define-feature *select* t)
 (define-feature *ruby* t)
 (define-feature *javascript* t)
@@ -207,6 +208,11 @@
 
 ;; Make snippets available to all modes.
 (require 'snippet)
+
+(when-feature *ledger*
+  (autoload 'ledger-mode "ledger" "Mode for editing finacial ledgers" t)
+  (safe-add-to-alist auto-mode-alist
+    ("doc/kiddsoftware/.*\\.dat\\'" . ledger-mode)))
 
 (when-feature *select*
   (load "select")
