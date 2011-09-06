@@ -136,6 +136,14 @@
   ".obj" ".d" ".fasl" ".pfsl" ".jlc" ".hi")
 (setq show-trailing-whitespace t)
 
+;; Put Emacs backup files in a centralized location and make more of them.
+;; See http://stackoverflow.com/questions/151945/how-do-i-control-how-emacs-makes-backup-files
+(setq backup-directory-alist `(("." . "~/.emacs-backups")))
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
 ;; Disable font-lock-mode on the terminal, because the colors are never
 ;; right.
 (unless window-system
