@@ -160,6 +160,7 @@
 (global-set-key "\C-cr" 'rename-buffer)
 (global-set-key "\C-ci" 'send-invisible)
 (global-set-key "\C-cd" 'find-dotemacs)
+(global-set-key "\C-ct" 'find-todo)
 (global-set-key [?\s-a] 'anything)
 
 ;; Git-specific bindings.
