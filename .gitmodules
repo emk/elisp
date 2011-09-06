@@ -13,3 +13,6 @@
 [submodule "3rd-party/coffee-mode"]
 	path = 3rd-party/coffee-mode
 	url = http://github.com/defunkt/coffee-mode.git
+[submodule "3rd-party/pig-mode"]
+	path = 3rd-party/pig-mode
+	url = git://github.com/motus/pig-mode.git

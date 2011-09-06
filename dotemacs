@@ -111,6 +111,7 @@
 (define-feature *project-root* t)
 (define-feature *anything* t)
 (define-feature *dylan* nil)
+(define-feature *pig-mode* t)
 
 ;;;
 ;;; Basic Global Customizations
@@ -462,3 +463,11 @@
 ;     ("dmet" "define method" nil 0)
 ;     ("udyl" "use dylan;" nil 0)
 ;     ("dcla" "define class" nil 0)))
+
+(when-feature *pig-mode*
+  (push-3rd-party-elisp-directory "pig-mode")
+  (autoload 'pig-mode "pig-mode"
+     "Edit Pig source files for use with Hadoop" t)
+  (safe-add-to-alist auto-mode-alist
+    ("\\.pig\\'" . pig-mode))
+  )
