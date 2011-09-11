@@ -102,8 +102,9 @@
 (defun git-grep (shell-args)
   "Run git grep over the current project with the specified shell arguments"
   (interactive "sgit grep: ")
-  (with-git-top-dir
-    (compile (concat "git grep -n " shell-args))))
+  (let ((process-environment (cons "PAGER=cat" process-environment)))
+    (with-git-top-dir
+      (compile (concat "git grep -n " shell-args)))))
 
 (define-minor-mode git-commit-message-mode
   "Minor mode for editing git commit messages"
