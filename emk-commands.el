@@ -56,11 +56,32 @@ when the function is called via `format-alist'."
         sh-basic-offset 8
         c-basic-offset 8))
 
+(defun todo-file-p (path)
+  "Does this path point to a TODO file?"
+  (string-match-p "^[[:digit:]]\\{8\\}\\.txt$" path))
+
 (defun find-todo ()
   "Find today's todo file, creating it if necessary."
   (interactive)
-  (let ((path (format-time-string "~/doc/todo/%Y%m%d.txt")))
-    (find-file path)))
+  (let* ((todo-dir "~/doc/todo/")
+         (today (concat todo-dir (format-time-string "%Y%m%d.txt"))))
+    (find-file today)
+
+    ;; Copy over the most recent TODO list, if any.
+    (when (and (string= (buffer-string) "") (not (file-exists-p today)))
+      (let ((existing
+             (remove-if-not
+              'todo-file-p
+              (reverse (sort (directory-files todo-dir) 'string<))))
+            (previous-text nil))
+        (when existing
+          (with-current-buffer
+              (find-file-noselect (concat todo-dir (car existing)))
+            (setq previous-text (buffer-string))
+            (kill-buffer))
+          (insert previous-text)
+          (message (concat "Copied TODO items from " (car existing)))
+          (goto-char (point-min)))))))
 
 ;; From https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 (defun rename-file-and-buffer (new-name)
