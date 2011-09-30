@@ -261,6 +261,7 @@
     ("Gemfile\\'" . ruby-mode)
     ("config\\.ru\\'" . ruby-mode)
     ("\\.rake\\'" . ruby-mode)
+    ("\\.gemspec\\'" . ruby-mode)
     ("\\.rhtml\\'" . html-mode)
     ("\\.builder\\'" . ruby-mode)
     ("\\.css\\'" . css-mode)
