@@ -16,3 +16,6 @@
 [submodule "3rd-party/pig-mode"]
 	path = 3rd-party/pig-mode
 	url = git://github.com/motus/pig-mode.git
+[submodule "3rd-party/auto-lang"]
+	path = 3rd-party/auto-lang
+	url = https://github.com/altruizine/auto-lang.git
