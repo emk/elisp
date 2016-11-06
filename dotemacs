@@ -50,9 +50,14 @@
  '(magit-commit-ask-to-stage t)
  '(magit-status-buffer-switch-function (quote switch-to-buffer))
  '(menu-bar-mode nil)
+ '(ns-alternate-modifier (quote hyper))
+ '(ns-command-modifier (quote meta))
  '(org-agenda-files
    (quote
     ("~/clients/faraday/faraday.org" "~/doc/org/work.org" "~/doc/org/hacking.org")))
+ '(package-selected-packages
+   (quote
+    (yasnippet twittering-mode toml-mode ruby-electric ripgrep restclient racer python-mode purescript-mode projectile project-root phi-search pcre2el org-trello org multiple-cursors markdown-mode magit langtool kill-ring-search json-reformat js2-mode ido-better-flex hyde highlight hcl-mode handlebars-mode go-mode emojify elm-mode elixir-mode elixir-mix dockerfile-mode company column-enforce-mode cargo arduino-mode)))
  '(safe-local-variable-values
    (quote
     ((coq-prog-args "-emacs-U" "-I" "/home/emk/w/src/cpdt/src")
@@ -129,7 +134,7 @@
 (define-feature *planetary* t)
 (define-feature *slime* nil)
 (define-feature *haskell* t)
-(define-feature *scala* t)
+(define-feature *scala* nil)
 (define-feature *predictive* t)
 (define-feature *git* t)
 (define-feature *nxml* t)
@@ -142,7 +147,7 @@
 (define-feature *uim* nil)
 (define-feature *ibus* nil)
 (define-feature *fancy-editing* t)
-(define-feature *proof-general* t)
+(define-feature *proof-general* nil)
 (define-feature *rust-racer* t)
 
 ;;;
@@ -156,8 +161,8 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (setq flyspell-issue-welcome-flag nil) ; Work around a flyspell problem?
-(push-3rd-party-elisp-directory "auto-lang")
-(require 'auto-lang)
+;;(push-3rd-party-elisp-directory "auto-lang")
+;;(require 'auto-lang)
 (safe-add-hook text-mode-hook activate-auto-fill-mode ()
   (auto-fill-mode 1)
   ;;(auto-lang-minor-mode 1)
@@ -181,7 +186,7 @@
                            ("melpa" . "http://melpa.milkbox.net/packages/")))
   (package-initialize))
 
-(require 'editorconfig)
+;;(require 'editorconfig)
 (require 'column-enforce-mode)
 (global-column-enforce-mode t)        ; Display lines > 80 columns
 
@@ -416,9 +421,9 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
-(when-feature *scala*
-  (push-3rd-party-elisp-directory "scala")
-  (require 'scala-mode-auto))
+;;(when-feature *scala*
+;;  (push-3rd-party-elisp-directory "scala")
+;;  (require 'scala-mode-auto))
 
 ;; Google's "Go" language.
 ;;(when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
@@ -624,7 +629,10 @@
   (require 'rust-mode)
   ;; See https://github.com/racer-rust/emacs-racer
   (setq racer-rust-src-path
-        "/home/emk/.multirust/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
+        (expand-file-name
+         (if (eq system-type 'darwin)
+             "~/.multirust/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src"
+           "~/.multirust/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")))
   (setenv "CARGO_HOME" (expand-file-name "~/.cargo"))
   (add-hook 'rust-mode-hook #'racer-mode)
   (add-hook 'racer-mode-hook #'eldoc-mode)
