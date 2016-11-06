@@ -88,7 +88,7 @@
 
 (defmacro with-git-top-dir (&rest body)
   (let ((dir (gensym)))
-    `(let* ((,dir (magit-get-top-dir default-directory))
+    `(let* ((,dir (magit-get-top-dir))
             (default-directory ,dir))
        ,@body)))
 (defindent with-git-top-dir 0)
