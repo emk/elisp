@@ -16,10 +16,17 @@
   (interactive)
   (find-file "~/w/elisp/dotemacs"))
 
+(defun insert-timestamp-rfc-2822 ()
+  "Insert a timestamp at point in RFC 2822 format."
+  (interactive)
+  ;; http://stackoverflow.com/questions/14074912/how-do-i-delete-the-newline-from-a-process-output
+  (insert (replace-regexp-in-string "\n$" ""
+                                    (shell-command-to-string "date -R"))))
+
 ;;;
 ;;; Unwrapping lines (adapted from longlines.el by Kai Grossjohann and Alex
 ;;; Schroeder)
-;;; 
+;;;
 
 (defun unwrap-region (start end &optional buffer)
   "Unwrap long lines in the region from START to END.
@@ -36,7 +43,7 @@ when the function is called via `format-alist'."
       (unless (get-text-property (match-beginning 0) 'hard)
         (replace-match " ")))
     (max end (point))))
- 
+
 (defun unwrap-paragraph ()
   "Unwrap all lines in the current paragraph."
   (interactive)
@@ -117,3 +124,99 @@ when the function is called via `format-alist'."
        (set-visited-file-name newname)
        (set-buffer-modified-p nil)
        t))))
+
+;; From http://andrewcoxtech.blogspot.com/2009/11/inserting-bom-into-file.html
+(defun insert-bom ()
+  "Insert a Unicode Byte Order Mark at the beginning of the buffer."
+  (interactive)
+  (goto-char (point-min))
+  (ucs-insert (string-to-number "FEFF" 16)))
+
+;; From https://github.com/magnars/.emacs.d/blob/master/defuns/lisp-defuns.el
+;; This is fun with multiple cursors mode! http://emacsrocks.com/e13.html
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+(defun coq-unicode-cleanup ()
+  "Convert pretty Unicode back to correct ASCII characters."
+  (interactive)
+  (save-excursion
+    (proof-goto-end-of-locked)
+    (let ((start (point)))
+      (mapcar (lambda (r) (replace-string (car r) (cdr r) nil start (point-max)))
+              '(("⇒" . "=>")
+                ("×" . "*")
+                ("→" . "->")
+                ("∀" . "forall ")
+                ("⇓" . "||"))))))
+
+;;=========================================================================
+;; Case utilities
+;;
+;; Taken from http://www.emacswiki.org/CamelCase.
+
+(defun split-name (s)
+  "Split a typical programming language identifier into words."
+  (split-string
+   (let ((case-fold-search nil))
+     (downcase
+      (replace-regexp-in-string "\\([a-z]\\)\\([A-Z]\\)" "\\1 \\2" s)))
+   "[^A-Za-z0-9]+"))
+
+(defun camelcase  (s)
+  "Convert identifier to camelCase."
+  ;; TODO - Actually this is AllCapitalized, not camelCase.
+  (mapconcat 'capitalize (split-name s) ""))
+
+(defun underscore (s)
+  "Convert identifier to use underscores."
+  (mapconcat 'downcase (split-name s) "_"))
+
+(defun dasherize (s)
+  "Convert identifier to use dashes."
+  (mapconcat 'downcase (split-name s) "-"))
+
+(defun colonize (s)
+  "Convert identifier to use colons."
+  (mapconcat 'capitalize (split-name s) "::"))
+
+(defun pluralize (s)
+  "Convert string to English plural."
+  (if s
+      ;; We'll do better if we need to.
+      (concat s "s")
+    nil))
+
+(defun singularize (s)
+  "Convert string to English singular."
+  (if s
+      ;; We'll do better if we need to.
+      (replace-regexp-in-string "s$" "" s)
+    nil))
+
+(defun ember-appkit-type-from-path (path)
+  "Convert an appkit path to a class name."
+  (let ((components (split-string path "/")))
+    (if (= 2 (length components))
+        (let ((directory (car components))
+              (file (cadr components)))
+          (concat (camelcase file)
+                  (if (or (string= directory "models")
+                          (string= directory "utils"))
+                      ""
+                    (camelcase (singularize directory)))))
+      nil)))
+
+(defun ripgrep-project (shell-args)
+  "Run ripgrep over the current Projectile project."
+  (interactive "srg: ")
+  (require 'projectile)
+  (projectile-with-default-dir (projectile-project-root)
+    (compile (concat "rg --no-heading " shell-args))))

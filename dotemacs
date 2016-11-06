@@ -28,16 +28,17 @@
 ;;;
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(auto-install-directory "~/w/elisp/3rd-party/auto-install/")
  '(c-basic-offset 4)
  '(column-number-mode t)
  '(css-indent-offset 2)
  '(current-language-environment "UTF-8")
  '(display-time-mode t)
+ '(emojify-composed-text-p t)
  '(ido-confirm-unique-completion t)
  '(ido-enable-dot-prefix t)
  '(ido-enable-flex-matching t)
@@ -45,8 +46,30 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(javascript-indent-level 2)
+ '(langtool-language-tool-jar "/home/emk/bin/languagetool.jar")
+ '(magit-commit-ask-to-stage t)
+ '(magit-status-buffer-switch-function (quote switch-to-buffer))
  '(menu-bar-mode nil)
- '(safe-local-variable-values (quote ((encoding . utf-8) (ruby-compilation-executable . "ruby") (ruby-compilation-executable . "ruby1.8") (ruby-compilation-executable . "ruby1.9") (ruby-compilation-executable . "rbx") (ruby-compilation-executable . "jruby"))))
+ '(org-agenda-files
+   (quote
+    ("~/clients/faraday/faraday.org" "~/doc/org/work.org" "~/doc/org/hacking.org")))
+ '(safe-local-variable-values
+   (quote
+    ((coq-prog-args "-emacs-U" "-I" "/home/emk/w/src/cpdt/src")
+     (auto-fill-mode)
+     (visual-line-mode . t)
+     (require-final-newline)
+     (eval progn
+           (auto-fill-mode 0)
+           (visual-line-mode 1))
+     (nxml-child-indent . 4)
+     (nxml-outline-child-indent . 4)
+     (encoding . utf-8)
+     (ruby-compilation-executable . "ruby")
+     (ruby-compilation-executable . "ruby1.8")
+     (ruby-compilation-executable . "ruby1.9")
+     (ruby-compilation-executable . "rbx")
+     (ruby-compilation-executable . "jruby"))))
  '(scss-compile-at-save nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
@@ -54,10 +77,10 @@
  '(whitespace-global-mode nil nil (whitespace)))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(font-lock-comment-face ((((class color)) (:foreground "Firebrick"))))
  '(font-lock-function-name-face ((((class color)) (:foreground "DarkGreen"))))
@@ -96,6 +119,7 @@
 ;;; Active Features
 ;;;
 
+(define-feature *package* t)
 (define-feature *auto-install* t)
 (define-feature *ledger* t)
 (define-feature *select* t)
@@ -114,6 +138,12 @@
 (define-feature *anything* t)
 (define-feature *dylan* nil)
 (define-feature *pig-mode* t)
+(define-feature *flex* t)
+(define-feature *uim* nil)
+(define-feature *ibus* nil)
+(define-feature *fancy-editing* t)
+(define-feature *proof-general* t)
+(define-feature *rust-racer* t)
 
 ;;;
 ;;; Basic Global Customizations
@@ -125,18 +155,35 @@
 (put 'eval-expression 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(setq flyspell-issue-welcome-flag nil) ; Work around a flyspell problem?
+(push-3rd-party-elisp-directory "auto-lang")
+(require 'auto-lang)
 (safe-add-hook text-mode-hook activate-auto-fill-mode ()
   (auto-fill-mode 1)
-  (flyspell-mode 1))
+  ;;(auto-lang-minor-mode 1)
+  )
 ;;(resize-minibuffer-mode 1)
 (line-number-mode 1)
-(partial-completion-mode 1)
+;;(partial-completion-mode 1)
 (setq-default indent-tabs-mode nil)   ; Always use spaces to indent
 (setq-default fill-column 75)         ; Set a column for filling text
 (setq next-line-add-newlines nil)     ; Don't insert newline at end of buffer!
 (safe-add-items completion-ignored-extensions
   ".obj" ".d" ".fasl" ".pfsl" ".jlc" ".hi")
 (setq show-trailing-whitespace t)
+(setq create-lockfiles nil)           ; Disable lockfiles for broccoli.js.
+
+;; Set up Emacs pacakge manager.
+(when-feature *package*
+  (require 'package)
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                           ("marmalade" . "http://marmalade-repo.org/packages/")
+                           ("melpa" . "http://melpa.milkbox.net/packages/")))
+  (package-initialize))
+
+(require 'editorconfig)
+(require 'column-enforce-mode)
+(global-column-enforce-mode t)        ; Display lines > 80 columns
 
 ;; Put Emacs backup files in a centralized location and make more of them.
 ;; See http://stackoverflow.com/questions/151945/how-do-i-control-how-emacs-makes-backup-files
@@ -165,18 +212,21 @@
 (global-set-key "\C-xf" 'find-file)   ; Do the Right Thing for common typo
 (global-set-key "\C-cz" 'eshell)
 (global-set-key "\C-ce" 'eval-region)
+(global-set-key [?\s-e] 'eval-and-replace)
 (global-set-key "\C-cm" 'man)
 (global-set-key "\C-cw" 'ispell-word)
 (global-set-key "\C-cr" 'rename-buffer)
 (global-set-key "\C-ci" 'send-invisible)
 (global-set-key "\C-cd" 'find-dotemacs)
 (global-set-key "\C-ct" 'find-todo)
-(global-set-key [?\s-a] 'anything)
+;;(global-set-key [?\s-a] 'anything)
+(global-set-key "\M-\C-y" 'kill-ring-search)
+(global-set-key "\C-ca" 'org-agenda)
 
 ;; Git-specific bindings.
 (define-prefix-command 'git-tools)
 (global-set-key "\C-cg" 'git-tools)
-(global-set-key [?\s-g] 'magit-status)
+(global-set-key [?\H-g] 'magit-status)
 (global-set-key "\C-cgs" 'magit-status)
 (global-set-key "\C-cgk" 'gitk)
 (global-set-key "\C-cgc" 'git-insert-credit)
@@ -186,20 +236,21 @@
 
 ;; From emk-commands.el.
 (global-set-key "\C-cc" 'insert-block-comment)
+(global-set-key [?\H-r] 'ripgrep-project)
 
 ;;;
 ;;; C Support
 ;;;
 
-(safe-add-hook c-mode-common-hook c-mode-common-customizations ()
-  (setq c-basic-offset 4)
-  (setq c-recognize-knr-p nil)
-  (safe-add-to-alist c-offsets-alist
-    (substatement-open . 0)
-    (case-label . +)
-    (label . -)
-    (arglist-intro . +)
-    (arglist-cont . 0)))
+;;(safe-add-hook c-mode-common-hook c-mode-common-customizations ()
+;;  (setq c-basic-offset 4)
+;;  (setq c-recognize-knr-p nil))
+;;  (safe-add-to-alist c-offsets-alist
+;;    (substatement-open . 0)
+;;    (case-label . +)
+;;    (label . -)
+;;    (arglist-intro . +)
+;;    (arglist-cont . 0)))
 
 ;;;
 ;;; Mode configuration.
@@ -211,7 +262,7 @@
   (require 'auto-install))
 
 ;; My favorite Emacs completion mode.
-(require 'complete)
+;;(require 'complete)
 
 ;; ido-style completion for command names.
 ;; Disabled because it causes errors on Ubuntu 10.10 Emacs 23.
@@ -219,7 +270,7 @@
 ;;(smex-initialize)
 
 ;; Make snippets available to all modes.
-(require 'snippet)
+(yas-global-mode t)
 
 (when-feature *ledger*
   (autoload 'ledger-mode "ledger" "Mode for editing finacial ledgers" t)
@@ -250,8 +301,8 @@
 
 (when-feature *ruby*
   ;; Rinari is hugely useful for nagivating around inside a Rails application.
-  (push-3rd-party-elisp-directory "rinari")
-  (require 'rinari)
+  ;;(push-3rd-party-elisp-directory "rinari")
+  ;;(require 'rinari)
 
   (safe-add-to-alist auto-mode-alist
     ("\\.rb\\'" . ruby-mode)
@@ -259,6 +310,7 @@
     ("\\.rake\\'" . ruby-mode)
     ("Buildfile\\'" . ruby-mode)
     ("Gemfile\\'" . ruby-mode)
+    ("Guardfile\\'" . ruby-mode)
     ("config\\.ru\\'" . ruby-mode)
     ("\\.rake\\'" . ruby-mode)
     ("\\.gemspec\\'" . ruby-mode)
@@ -267,6 +319,7 @@
     ("\\.css\\'" . css-mode)
     ("\\.scss\\'" . scss-mode)
     ("\\.scss.erb\\'" . scss-mode)
+    ("\\.styl\\'" . css-mode)
     ("\\.yml\\'" . yaml-mode))
 
   (autoload 'ruby-mode "ruby-mode" "Mode for editing Ruby files" t)
@@ -286,20 +339,19 @@
 
   (mmm-add-mode-ext-class nil "\\.html\\.erb\\'" 'embedded-ruby)
 
-  (defun ruby-body-snippet (start)
-    (concat start "\n$>$.\nend$>"))
-
-  (define-abbrev-table 'ruby-mode-abbrev-table '())
-  (snippet-with-abbrev-table 'ruby-mode-abbrev-table
-    ("module" . (ruby-body-snippet "module $${Name}"))
-    ("class" . (ruby-body-snippet "class $${Name}"))
-    ("def" . (ruby-body-snippet "def $${name}"))
-    ("if" . (ruby-body-snippet "if $${cond}"))
-    ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
-    ("it" . (ruby-body-snippet "it \"$${does something}\" do"))
-    ("describe" . (ruby-body-snippet "describe $${Context} do"))
-    ("before" . (ruby-body-snippet "before do"))
-    )
+  ;;(defun ruby-body-snippet (start)
+  ;;  (concat start "\n$>$.\nend$>"))
+  ;;(define-abbrev-table 'ruby-mode-abbrev-table '())
+  ;;(snippet-with-abbrev-table 'ruby-mode-abbrev-table
+  ;;  ("module" . (ruby-body-snippet "module $${Name}"))
+  ;;  ("class" . (ruby-body-snippet "class $${Name}"))
+  ;;  ("def" . (ruby-body-snippet "def $${name}"))
+  ;;  ("if" . (ruby-body-snippet "if $${cond}"))
+  ;;  ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
+  ;;  ("it" . (ruby-body-snippet "it \"$${does something}\" do"))
+  ;;  ("describe" . (ruby-body-snippet "describe $${Context} do"))
+  ;;  ("before" . (ruby-body-snippet "before do"))
+  ;;  )
 
   (defun inside-ruby-comment-p ()
     (save-excursion (beginning-of-line) (looking-at "\\s-*#")))
@@ -328,9 +380,10 @@
   (safe-add-to-alist auto-mode-alist
     ("\\.js\\'" . js2-mode))
 
-  (push-3rd-party-elisp-directory "sinasi")
-  (require 'sinasi)
-  (sinasi-bind-finders-with-prefix ?\s-s))
+  ;;(push-3rd-party-elisp-directory "sinasi")
+  ;;(require 'sinasi)
+  ;;(sinasi-bind-finders-with-prefix ?\s-s)
+  )
 
 (when-feature *coffeescript*
   (push-3rd-party-elisp-directory "coffee-mode")
@@ -368,24 +421,22 @@
   (require 'scala-mode-auto))
 
 ;; Google's "Go" language.
-(when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
-  (setenv "GOROOT" "/Users/emk/src/go")
-  (setenv "GOARCH" "386")
-  (setenv "GOOS" "darwin")
-  (setenv "GOBIN" "/opt/go/bin")
-  (setenv "PATH" (concat (getenv "GOBIN") ":" (getenv "PATH")))
-
-  (setq load-path (cons "~/src/go/misc/emacs/" load-path))
-  (load "go-mode-load.el"))
+;;(when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
+;;  (setenv "GOROOT" "/Users/emk/src/go")
+;;  (setenv "GOARCH" "386")
+;;  (setenv "GOOS" "darwin")
+;;  (setenv "GOBIN" "/opt/go/bin")
+;;  (setenv "PATH" (concat (getenv "GOBIN") ":" (getenv "PATH")))
+;;
+;;  (setq load-path (cons "~/src/go/misc/emacs/" load-path))
+;;  (load "go-mode-load.el"))
 
 (when-feature *predictive*
   (push-3rd-party-elisp-directory "predictive")
   (autoload 'predictive-mode "predictive" "Predictive Input Mode" t))
 
 (when-feature *git*
-  (push-3rd-party-elisp-directory "magit")
-  (require 'magit)
-  (autoload 'git-blame-mode "git-blame" "Git blame mode" t)) 
+  (autoload 'git-blame-mode "git-blame" "Git blame mode" t))
 
 (when-feature *nxml*
   (push-3rd-party-elisp-directory "nxml-mode-20041004")
@@ -486,3 +537,100 @@
   (safe-add-to-alist auto-mode-alist
     ("\\.pig\\'" . pig-mode))
   )
+
+(when-feature *flex*
+  (autoload 'actionscript-mode "actionscript-mode"
+    "Edit ActionScript 3 source files" t)
+  (safe-add-to-alist auto-mode-alist
+    ("\\.as\\'" . actionscript-mode))
+  )
+
+(autoload 'wc-mode "wc-mode"
+  "Count words in current buffer" t)
+
+;; Set up UIM, the Universal Input Method, assuming it's installed in the
+;; standard location.  Note that it may be necessary to launch Emacs as:
+;;
+;;   env XMODIFIERS= GTK_IM_MODULE= /usr/bin/emacs23 %F
+;;
+;; ...or something like that, to make sure that we only use our internal
+;; version of UIM, and not the X11 or GTK version.  Trying to use both an
+;; external and internal UIM typically breaks the Compose key, and prevents
+;; me from typing in French.
+(when-feature *uim*
+  (setq load-path
+        (cons "/usr/local/share/emacs/site-lisp/uim-el" load-path))
+  (autoload 'uim-mode "uim"
+    "Activate or deactivate Universal Input Method." t)
+  (global-set-key "\C-cu" 'uim-mode)
+  (add-hook 'uim-load-hook
+            '(lambda ()
+               (define-key uim-mode-map [67108896] nil)
+               (define-key uim-mode-map [0] nil)))
+
+  (defun hieroglyph-init ()
+    "Set up hieroglyphs in Emacs."
+    (interactive)
+    (set-fontset-font "fontset-default" nil "Gardiner" nil 'append))
+  (global-set-key "\C-ch" 'hieroglyph-init)
+  )
+
+(when-feature *ibus*
+  (require 'ibus)
+  (add-hook 'after-init-hook 'ibus-mode-on)
+  (ibus-define-common-key ?\C-\s nil)
+  (ibus-define-common-key ?\C-/ nil)
+  (set-fontset-font "fontset-default" nil  '("Aegyptus" . "iso10646-1") nil 'append)
+  (global-set-key "\C-cu" 'ibus-toggle)
+  )
+
+(when-feature *fancy-editing*
+  (require 'multiple-cursors)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  ;; Don't forget C-x r y, which will yank all kill rings after mc has ended.
+  (require 'ido-better-flex)
+  (require 'projectile)
+  (define-key projectile-mode-map [?\H-f] 'projectile-find-file)
+  (projectile-global-mode)
+  ;; Regular isearch doesn't like multiple-cursors.  But I don't especially
+  ;; like phi-search (I'm too used to regular isearch), so only bind it
+  ;; when I need it.
+  (require 'phi-search)
+  (define-key mc/keymap (kbd "C-s") 'phi-search)
+  (define-key mc/keymap (kbd "C-r") 'phi-search-backward)
+  )
+
+;; Org-mode configuration.
+(setq org-todo-keyword-faces
+      '(("WAIT" . "blue") ("SENT" . "blue")))
+(setq org-enforce-todo-dependencies t
+      org-agenda-dim-blocked-tasks t
+      org-agenda-tags-todo-honor-ignore-options t
+      org-agenda-todo-ignore-scheduled 'future)
+
+(put 'upcase-region 'disabled nil)
+
+(setq magit-last-seen-setup-instructions "1.4.0")
+
+(when-feature *proof-general*
+  (load-file (concat *emk-3rd-party-elisp-directory*
+                     "/ProofGeneral/generic/proof-site.el"))
+  )
+
+(when-feature *rust-racer*
+  (require 'rust-mode)
+  ;; See https://github.com/racer-rust/emacs-racer
+  (setq racer-rust-src-path
+        "/home/emk/.multirust/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
+  (setenv "CARGO_HOME" (expand-file-name "~/.cargo"))
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode)
+  (add-hook 'racer-mode-hook
+            (lambda ()
+              (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+  (setq company-tooltip-align-annotations t))
