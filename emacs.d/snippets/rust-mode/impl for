@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: impl for
+# key: implf
+# binding: direct-keybinding
+# --
+impl ${1:Trait} for ${2:Type} {
+    $0
+}

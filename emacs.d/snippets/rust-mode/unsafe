@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: unsafe
+# key: unsafe
+# binding: direct-keybinding
+# --
+unsafe {
+    $0
+}

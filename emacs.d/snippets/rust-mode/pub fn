@@ -1,0 +1,14 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: pub fn
+# key: pfn
+# binding: direct-keybinding
+# --
+/// ${4:Description.}
+///
+/// \`\`\`
+/// use ${5:modname}::$1;
+/// assert_eq!(${6:expected}, $1($7));
+/// \`\`\`
+pub fn ${1:name}($2)$3 {
+    $0
+}

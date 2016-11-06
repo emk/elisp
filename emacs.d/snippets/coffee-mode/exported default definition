@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: exported default definition
+# key: exp
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed))
+# --
+${1:Type} = ${2:Ember.Object}.extend
+  $0
+
+\`export default $1\`

@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: awsapp
+# key: awsapp
+# binding: direct-keybinding
+# --
+# MAPPING/$1: AWS_ACCESS_KEY_ID secret/services/aws/$1:access_key_id
+# MAPPING/$1: AWS_SECRET_ACCESS_KEY secret/services/aws/$1:secret_access_key
+path "secret/services/aws/${1:app}" {
+  access_key_id = "${2:access_key_id}"
+  secret_access_key = "${3:secret_access_key}"
+}

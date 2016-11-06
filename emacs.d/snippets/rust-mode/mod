@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: mod
+# key: mod
+# binding: direct-keybinding
+# --
+mod ${1:name} {
+    $0
+}

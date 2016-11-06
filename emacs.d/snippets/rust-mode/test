@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: test
+# key: test
+# binding: direct-keybinding
+# --
+#[test]
+fn test_${1:name} {
+   $0
+}

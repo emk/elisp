@@ -4,3 +4,8 @@
 /3rd-party/js2.elc
 /3rd-party/scala/.latest-build
 /3rd-party/scala/*.elc
+/emacs.d/eshell/
+/emacs.d/projectile-bookmarks.eld
+/emacs.d/session*
+/emacs.d/url/
+/emacs.d/request/

@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: if let
+# key: ifl
+# binding: direct-keybinding
+# --
+if let ${1:pat} = ${2:expr} {
+    $0
+}

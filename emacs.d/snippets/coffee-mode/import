@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import
+# key: imp
+# binding: direct-keybinding
+# --
+\`import ${1:$(or (ember-appkit-type-from-path yas-text) "Type")} from 'appkit/${1:models/foo}'\`

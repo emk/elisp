@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: rollbarapp
+# key: rollbarapp
+# binding: direct-keybinding
+# --
+# MAPPING/$1: secret/services/rollbar/$1:access_token
+path "secret/services/rollbar/${1:app}" {
+  access_token = "${2:token}"
+}
