@@ -32,7 +32,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-install-directory "~/w/elisp/3rd-party/auto-install/")
  '(c-basic-offset 4)
  '(column-number-mode t)
  '(css-indent-offset 2)
@@ -125,29 +124,19 @@
 ;;;
 
 (define-feature *package* t)
-(define-feature *auto-install* t)
 (define-feature *ledger* t)
 (define-feature *select* t)
 (define-feature *ruby* t)
 (define-feature *javascript* t)
-(define-feature *coffeescript* t)
-(define-feature *planetary* t)
-(define-feature *slime* nil)
 (define-feature *haskell* t)
-(define-feature *scala* nil)
 (define-feature *predictive* t)
 (define-feature *git* t)
-(define-feature *nxml* t)
-(define-feature *cucumber* t)
 (define-feature *project-root* t)
-(define-feature *anything* t)
 (define-feature *dylan* nil)
-(define-feature *pig-mode* t)
 (define-feature *flex* t)
 (define-feature *uim* nil)
 (define-feature *ibus* nil)
 (define-feature *fancy-editing* t)
-(define-feature *proof-general* nil)
 (define-feature *rust-racer* t)
 
 ;;;
@@ -161,11 +150,8 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (setq flyspell-issue-welcome-flag nil) ; Work around a flyspell problem?
-;;(push-3rd-party-elisp-directory "auto-lang")
-;;(require 'auto-lang)
 (safe-add-hook text-mode-hook activate-auto-fill-mode ()
   (auto-fill-mode 1)
-  ;;(auto-lang-minor-mode 1)
   )
 ;;(resize-minibuffer-mode 1)
 (line-number-mode 1)
@@ -244,35 +230,8 @@
 (global-set-key [?\H-r] 'ripgrep-project)
 
 ;;;
-;;; C Support
-;;;
-
-;;(safe-add-hook c-mode-common-hook c-mode-common-customizations ()
-;;  (setq c-basic-offset 4)
-;;  (setq c-recognize-knr-p nil))
-;;  (safe-add-to-alist c-offsets-alist
-;;    (substatement-open . 0)
-;;    (case-label . +)
-;;    (label . -)
-;;    (arglist-intro . +)
-;;    (arglist-cont . 0)))
-
-;;;
 ;;; Mode configuration.
 ;;;
-
-;; Set this up first, in case other code depends on it.
-(when-feature *auto-install*
-  (push-3rd-party-elisp-directory (concat "auto-install"))
-  (require 'auto-install))
-
-;; My favorite Emacs completion mode.
-;;(require 'complete)
-
-;; ido-style completion for command names.
-;; Disabled because it causes errors on Ubuntu 10.10 Emacs 23.
-;;(require 'smex)
-;;(smex-initialize)
 
 ;; Make snippets available to all modes.
 (yas-global-mode t)
@@ -301,9 +260,6 @@
 (safe-add-to-alist auto-mode-alist
   ("\\.py\\'" . python-mode))
 
-;;(autoload 'gamescript-mode "~/src/gamescript/gamescript.el"
-;;  "Mode for editing GameScript source code" t)
-
 (when-feature *ruby*
   ;; Rinari is hugely useful for nagivating around inside a Rails application.
   ;;(push-3rd-party-elisp-directory "rinari")
@@ -330,90 +286,13 @@
   (autoload 'ruby-mode "ruby-mode" "Mode for editing Ruby files" t)
   (autoload 'yaml-mode "yaml-mode" "Mode for editing YAML files" t)
   (autoload 'scss-mode "scss-mode" "Mode for editing SCSS files" t)
-
-  (push-3rd-party-elisp-directory "mmm-mode-0.4.8")
-  (require 'mmm-auto)
-  (setq mmm-global-mode 'maybe)
-
-  (mmm-add-classes
-   '((embedded-ruby
-      :submode ruby-mode
-      :face mmm-declaration-submode-face
-      :front "<%"
-      :back "%>")))
-
-  (mmm-add-mode-ext-class nil "\\.html\\.erb\\'" 'embedded-ruby)
-
-  ;;(defun ruby-body-snippet (start)
-  ;;  (concat start "\n$>$.\nend$>"))
-  ;;(define-abbrev-table 'ruby-mode-abbrev-table '())
-  ;;(snippet-with-abbrev-table 'ruby-mode-abbrev-table
-  ;;  ("module" . (ruby-body-snippet "module $${Name}"))
-  ;;  ("class" . (ruby-body-snippet "class $${Name}"))
-  ;;  ("def" . (ruby-body-snippet "def $${name}"))
-  ;;  ("if" . (ruby-body-snippet "if $${cond}"))
-  ;;  ("for" . (ruby-body-snippet "for $${elem} in $${enumeration}"))
-  ;;  ("it" . (ruby-body-snippet "it \"$${does something}\" do"))
-  ;;  ("describe" . (ruby-body-snippet "describe $${Context} do"))
-  ;;  ("before" . (ruby-body-snippet "before do"))
-  ;;  )
-
-  (defun inside-ruby-comment-p ()
-    (save-excursion (beginning-of-line) (looking-at "\\s-*#")))
-
-  (defun line-only-contains-abbrev-p ()
-    (save-excursion (beginning-of-line) (looking-at "\\s-*\\S-+$")))
-
-  (defun ruby-pre-abbrev-expand ()
-    ;; This code is adapted from the snippet.el documentation.
-    (setq local-abbrev-table
-          (cond
-           ((inside-ruby-comment-p) text-mode-abbrev-table)
-           ((line-only-contains-abbrev-p) ruby-mode-abbrev-table)
-           (t nil))))
-
-  (defun ruby-snippet-setup ()
-    (abbrev-mode 1)
-    (make-variable-buffer-local 'pre-abbrev-expand-hook)
-    (add-hook 'pre-abbrev-expand-hook 'ruby-pre-abbrev-expand))
-  (add-hook 'ruby-mode-hook 'ruby-snippet-setup)
-
   )
 
 (when-feature *javascript*
   (autoload 'js2-mode "js2" nil t)
   (safe-add-to-alist auto-mode-alist
     ("\\.js\\'" . js2-mode))
-
-  ;;(push-3rd-party-elisp-directory "sinasi")
-  ;;(require 'sinasi)
-  ;;(sinasi-bind-finders-with-prefix ?\s-s)
   )
-
-(when-feature *coffeescript*
-  (push-3rd-party-elisp-directory "coffee-mode")
-  (autoload 'coffee-mode "coffee-mode" nil t)
-  (safe-add-to-alist auto-mode-alist
-    ("\\.coffee\\'" . coffee-mode))
-  ;; Coffee-mode has messed up tab-width handling, so fix it manually.
-  (setq coffee-tab-width 2)
-  (safe-add-hook coffee-mode-hook coffee-mode-customizations ()
-    (set (make-local-variable 'tab-width) coffee-tab-width)))
-
-(when-feature *planetary*
-  (push "~/src/planetary/tools" load-path)
-  (autoload 'jsr-mode "jsr" nil t)
-  (safe-add-to-alist auto-mode-alist
-    ("\\.jsr\\'" . jsr-mode)))
-
-(when-feature *slime*
-  (setenv "SBCL_HOME" "/Applications/Editors/Lispbox/sbcl-0.9.7/lib/sbcl")
-  (setq inferior-lisp-program
-        (concat "/Applications/Editors/Lispbox/sbcl-0.9.7/bin/sbcl --core "
-                "/Applications/Editors/Lispbox/sbcl-0.9.7/lib/sbcl/sbcl.core"))
-  (push-3rd-party-elisp-directory "slime")
-  (require 'slime)
-  (slime-setup))
 
 (when-feature *haskell*
   (push-3rd-party-elisp-directory "haskell-mode-2.4")
@@ -421,42 +300,12 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
-;;(when-feature *scala*
-;;  (push-3rd-party-elisp-directory "scala")
-;;  (require 'scala-mode-auto))
-
-;; Google's "Go" language.
-;;(when (file-exists-p "~/src/go/misc/emacs/go-mode-load.el")
-;;  (setenv "GOROOT" "/Users/emk/src/go")
-;;  (setenv "GOARCH" "386")
-;;  (setenv "GOOS" "darwin")
-;;  (setenv "GOBIN" "/opt/go/bin")
-;;  (setenv "PATH" (concat (getenv "GOBIN") ":" (getenv "PATH")))
-;;
-;;  (setq load-path (cons "~/src/go/misc/emacs/" load-path))
-;;  (load "go-mode-load.el"))
-
 (when-feature *predictive*
   (push-3rd-party-elisp-directory "predictive")
   (autoload 'predictive-mode "predictive" "Predictive Input Mode" t))
 
 (when-feature *git*
   (autoload 'git-blame-mode "git-blame" "Git blame mode" t))
-
-(when-feature *nxml*
-  (push-3rd-party-elisp-directory "nxml-mode-20041004")
-  (load "rng-auto")
-  (autoload 'rnc-mode "rnc-mode" "RELAX NG Compact schema mode" t)
-  (safe-add-to-alist auto-mode-alist
-    ("\\.xml\\'" . nxml-mode)
-    ("\\.xslt\\'" . nxml-mode)
-    ("\\.rnc\\'" . rnc-mode)))
-
-(when-feature *cucumber*
-  (push-3rd-party-elisp-directory "cucumber")
-  (autoload 'feature-mode "feature-mode" "Cucumber feature mode" t)
-  (safe-add-to-alist auto-mode-alist
-    ("\\.feature\\'" . feature-mode)))
 
 (when-feature *project-root*
   (require 'project-root)
@@ -481,29 +330,6 @@
   (global-set-key (kbd "C-c p p") 'project-root-run-default-command)
   (global-set-key (kbd "C-c p M-x")
                   'project-root-execute-extended-command))
-
-(when-feature *anything*
-  ;; I'm just experimenting with this.  I don't actually know whether it's
-  ;; useful yet.
-  (autoload 'anything "anything" "Select anything and perform an action" t)
-  (eval-after-load "anything"
-    '(progn
-       (require 'anything-config)
-       (require 'anything-match-plugin)))
-
-  (setq anything-sources
-        '(anything-c-source-buffers+
-          anything-c-source-file-name-history
-          anything-c-source-imenu
-          anything-c-source-files-in-current-dir+
-          ;;project-root-anything-config-files - find broken
-          anything-c-source-complex-command-history
-          ;;anything-c-source-info-pages - broken
-          anything-c-source-info-elisp
-          anything-c-source-man-pages
-          anything-c-source-lacarte
-          anything-c-source-emacs-commands
-          )))
 
 (when-feature *dylan*
    (autoload 'dylan-mode
@@ -534,14 +360,6 @@
 ;     ("dmet" "define method" nil 0)
 ;     ("udyl" "use dylan;" nil 0)
 ;     ("dcla" "define class" nil 0)))
-
-(when-feature *pig-mode*
-  (push-3rd-party-elisp-directory "pig-mode")
-  (autoload 'pig-mode "pig-mode"
-     "Edit Pig source files for use with Hadoop" t)
-  (safe-add-to-alist auto-mode-alist
-    ("\\.pig\\'" . pig-mode))
-  )
 
 (when-feature *flex*
   (autoload 'actionscript-mode "actionscript-mode"
@@ -619,11 +437,6 @@
 (put 'upcase-region 'disabled nil)
 
 (setq magit-last-seen-setup-instructions "1.4.0")
-
-(when-feature *proof-general*
-  (load-file (concat *emk-3rd-party-elisp-directory*
-                     "/ProofGeneral/generic/proof-site.el"))
-  )
 
 (when-feature *rust-racer*
   (require 'rust-mode)
